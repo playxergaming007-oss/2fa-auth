@@ -49,26 +49,26 @@
     padding: 28px 16px;
   }
 
-  .wrap{ width:100%; max-width: 640px; }
+  .wrap{ width:100%; max-width: 880px; }
 
   .brand{
     display:flex;
     align-items:center;
-    gap:10px;
-    margin-bottom:20px;
+    gap:12px;
+    margin-bottom:26px;
     padding-left:2px;
   }
   .brand .glyph{
-    width:30px; height:30px;
-    border-radius:9px;
+    width:38px; height:38px;
+    border-radius:11px;
     background: linear-gradient(135deg, var(--cyan), var(--violet));
     display:flex; align-items:center; justify-content:center;
     flex-shrink:0;
   }
-  .brand .glyph svg{ width:16px; height:16px; color:#fff; }
+  .brand .glyph svg{ width:20px; height:20px; color:#fff; }
   .brand span{
     font-weight:600;
-    font-size:17px;
+    font-size:22px;
     letter-spacing:0.2px;
   }
 
@@ -86,21 +86,21 @@
     .col-left{ border-right:none !important; border-bottom:1px solid var(--panel-border); }
   }
 
-  .col{ padding: 24px 22px; }
+  .col{ padding: 32px 30px; }
   .col-left{ border-right:1px solid var(--panel-border); }
 
   .col-label{
     font-family: var(--mono);
-    font-size:11px;
+    font-size:13px;
     font-weight:600;
     letter-spacing:1.4px;
     color: var(--cyan);
     display:flex;
     align-items:center;
-    gap:6px;
-    margin-bottom:14px;
+    gap:7px;
+    margin-bottom:16px;
   }
-  .col-label svg{ width:12px; height:12px; }
+  .col-label svg{ width:14px; height:14px; }
 
   .label-row{
     display:flex;
@@ -111,12 +111,12 @@
   .code-row{
     display:flex;
     align-items:stretch;
-    gap:10px;
+    gap:12px;
   }
   .refresh-pill{
     flex:0 0 auto;
-    width:44px;
-    height:44px;
+    width:56px;
+    height:56px;
     padding:0;
     display:flex;
     align-items:center;
@@ -124,8 +124,8 @@
     white-space:nowrap;
   }
   .refresh-pill svg{
-    width:16px;
-    height:16px;
+    width:20px;
+    height:20px;
   }
   .refresh-pill.spinning svg{
     animation: spin360 0.6s ease-out;
@@ -137,33 +137,33 @@
 
   .timer-pill{
     font-family: var(--mono);
-    font-size:11.5px;
+    font-size:14px;
     font-weight:600;
     background: rgba(255,255,255,0.05);
     border: 1px solid var(--panel-border);
     border-radius: 20px;
-    padding: 3px 10px;
+    padding: 5px 13px;
     display:flex;
     align-items:center;
-    gap:6px;
+    gap:7px;
     transition: color 0.9s linear, background-color 0.9s linear, border-color 0.9s linear;
   }
   .timer-pill .dot{
-    width:6px; height:6px; border-radius:50%;
+    width:7px; height:7px; border-radius:50%;
     background: currentColor;
   }
 
   textarea.key-input{
     width:100%;
-    height:96px;
+    height:120px;
     resize:none;
     background: var(--field-bg);
     border: 1px solid var(--panel-border);
-    border-radius:10px;
-    padding:14px;
+    border-radius:12px;
+    padding:16px;
     color: var(--ink);
     font-family: var(--mono);
-    font-size:13px;
+    font-size:16px;
     letter-spacing:0.6px;
     outline:none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -177,7 +177,7 @@
 
   .action-row{
     display:flex;
-    gap:10px;
+    gap:12px;
     margin-top:14px;
   }
 
@@ -186,27 +186,27 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:8px;
-    padding:11px 10px;
-    border-radius:10px;
+    gap:9px;
+    padding:14px 12px;
+    border-radius:12px;
     background: #171A26;
     border:1px solid var(--panel-border);
     color: var(--ink);
     font-family: var(--sans);
     font-weight:500;
-    font-size:13.5px;
+    font-size:16px;
     cursor:pointer;
     transition: border-color 0.15s ease, background 0.15s ease;
   }
   .btn-secondary:hover{ border-color: rgba(41,216,234,0.4); background:#1B1F2D; }
-  .btn-secondary svg{ width:15px; height:15px; flex-shrink:0; }
+  .btn-secondary svg{ width:18px; height:18px; flex-shrink:0; }
 
   .seg-bar{
     position: relative;
-    height:16px;
-    border-radius:3px;
+    height:20px;
+    border-radius:4px;
     overflow:hidden;
-    margin-bottom:8px;
+    margin-bottom:10px;
     background: #1B1E2A;
   }
   .seg-fill{
@@ -266,7 +266,7 @@
   .seg-head{
     position:absolute;
     top:50%; left:0;
-    width:6px; height:26px;
+    width:7px; height:32px;
     border-radius:3px;
     background: #F2FBFF;
     transform: translate(-50%, -50%);
@@ -286,77 +286,49 @@
     100% { opacity: 1;    filter: brightness(1); }
   }
 
-  .sys-readout{
-    display:flex;
-    justify-content:space-between;
-    font-family: var(--mono);
-    font-size:9.5px;
-    letter-spacing:0.6px;
-    color: var(--ink-faint);
-    margin-bottom:18px;
-  }
-  .sys-readout .mid{ color: var(--cyan); }
-
   .code-box{
     flex:1;
     min-width:0;
     background: var(--field-bg);
     border:1px solid var(--panel-border);
-    border-radius:10px;
-    padding:10px;
-    height:44px;
+    border-radius:12px;
+    padding:14px;
+    height:56px;
     display:flex;
     align-items:center;
     justify-content:center;
   }
-  .code-row{ margin-bottom:14px; }
+  .code-row{ margin-bottom:18px; }
   .code-box .otp{
     font-family: var(--mono);
-    font-size:18px;
+    font-size:24px;
     font-weight:600;
-    letter-spacing:3px;
+    letter-spacing:4px;
     color: var(--ink);
   }
-  .code-box .otp.placeholder{ color: var(--ink-faint); letter-spacing:4px; }
+  .code-box .otp.placeholder{ color: var(--ink-faint); letter-spacing:5px; }
 
   .btn-primary{
     width:100%;
-    padding:13px;
+    padding:17px;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
     background: linear-gradient(90deg, var(--cyan), var(--violet));
     color:#0A0C13;
     font-family: var(--sans);
     font-weight:700;
-    font-size:14px;
+    font-size:16px;
     cursor:pointer;
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:8px;
+    gap:10px;
     transition: filter 0.15s ease, transform 0.1s ease;
   }
   .btn-primary:hover{ filter: brightness(1.08); }
   .btn-primary:active{ transform: scale(0.99); }
   .btn-primary:disabled{ background:#23273a; color: var(--ink-faint); cursor:not-allowed; filter:none; }
-  .btn-primary svg{ width:15px; height:15px; }
-
-  .privacy-note{
-    display:flex;
-    gap:9px;
-    margin-top:14px;
-    padding:12px 13px;
-    border-radius:10px;
-    background: rgba(41,216,234,0.05);
-    border:1px solid rgba(41,216,234,0.15);
-  }
-  .privacy-note svg{ width:14px; height:14px; color: var(--cyan); flex-shrink:0; margin-top:1px; }
-  .privacy-note p{
-    margin:0;
-    font-size:11.5px;
-    line-height:1.5;
-    color: var(--ink-dim);
-  }
+  .btn-primary svg{ width:18px; height:18px; }
 
   .scan-overlay{
     position:fixed; inset:0;
@@ -452,22 +424,7 @@
         <div class="timer-pill" id="timerPill"><span class="dot"></span><span id="timerNum">--</span></div>
       </div>
 
-      <div style="margin-top:14px;">
-        <div class="seg-bar" id="segBar">
-          <div class="seg-fill" id="segFill"></div>
-          <div class="seg-glow"></div>
-          <div class="seg-cover" id="segCover"></div>
-          <div class="seg-ticks"></div>
-          <div class="seg-head" id="segHead"></div>
-        </div>
-        <div class="sys-readout">
-          <span id="readoutLeft">KEY_LEN.00</span>
-          <span class="mid" id="readoutMid">IDLE</span>
-          <span id="readoutRight">0x00</span>
-        </div>
-      </div>
-
-      <div class="code-row">
+      <div class="code-row" style="margin-top:14px;">
         <div class="code-box">
           <div class="otp placeholder" id="otpDisplay">------</div>
         </div>
@@ -480,15 +437,20 @@
         </button>
       </div>
 
+      <div style="margin-bottom:14px;">
+        <div class="seg-bar" id="segBar">
+          <div class="seg-fill" id="segFill"></div>
+          <div class="seg-glow"></div>
+          <div class="seg-cover" id="segCover"></div>
+          <div class="seg-ticks"></div>
+          <div class="seg-head" id="segHead"></div>
+        </div>
+      </div>
+
       <button class="btn-primary" id="copyBtn" type="button" disabled>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         Copy Code
       </button>
-
-      <div class="privacy-note">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-        <p>Your keys are processed entirely within your browser. No data is ever sent to a server. To verify, you can disconnect from the internet after loading this page.</p>
-      </div>
     </div>
   </div>
 </div>
@@ -511,9 +473,6 @@
   const timerPill = document.getElementById('timerPill');
   const timerNum = document.getElementById('timerNum');
   const segBar = document.getElementById('segBar');
-  const readoutLeft = document.getElementById('readoutLeft');
-  const readoutMid = document.getElementById('readoutMid');
-  const readoutRight = document.getElementById('readoutRight');
   const copyBtn = document.getElementById('copyBtn');
   const refreshBtn = document.getElementById('refreshBtn');
   const pasteBtn = document.getElementById('pasteBtn');
@@ -618,9 +577,6 @@
       otpDisplay.textContent = '------';
       otpDisplay.classList.add('placeholder');
       timerNum.textContent = '--';
-      readoutLeft.textContent = 'KEY_LEN.00';
-      readoutMid.textContent = 'IDLE';
-      readoutRight.textContent = '0x00';
       copyBtn.disabled = true;
       validKey = false;
       segCover.style.width = '100%';
@@ -635,7 +591,6 @@
       secretInput.classList.add('invalid');
       otpDisplay.textContent = 'ERROR';
       otpDisplay.classList.add('placeholder');
-      readoutMid.textContent = 'BAD_KEY';
       copyBtn.disabled = true;
       validKey = false;
       segCover.style.width = '100%';
@@ -660,9 +615,6 @@
     }
 
     copyBtn.disabled = false;
-    readoutLeft.textContent = 'KEY_LEN.' + String(keyLen).padStart(2,'0');
-    readoutMid.textContent = 'SYNC_OK';
-    readoutRight.textContent = '0x' + (counter & 0xff).toString(16).toUpperCase().padStart(2,'0');
   }
 
   // Runs every animation frame so the bar and timer glide continuously,

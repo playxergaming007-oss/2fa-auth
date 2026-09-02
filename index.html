@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>2fa-auth</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f5f5f4;
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+    margin: 0;
+  }
+  .card {
+    max-width: 380px;
+    width: 100%;
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  label {
+    font-size: 13px;
+    color: #6b6b68;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  input[type="text"] {
+    flex: 1;
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid #d8d6d0;
+    border-radius: 8px;
+    outline: none;
+  }
+  input[type="text"]:focus {
+    border-color: #888;
+  }
+  button {
+    border: 1px solid #d8d6d0;
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  button:hover { background: #f5f5f4; }
+  button:active { transform: scale(0.97); }
+  #pasteBtn { width: 40px; flex-shrink: 0; }
+  .code-box {
+    background: #f5f5f4;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  #refreshBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+  #refreshIcon {
+    font-size: 16px;
+    display: inline-block;
+  }
+  #code {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: #1a1a19;
+  }
+  #timeleft {
+    font-size: 12px;
+    color: #9a9a95;
+    margin-top: 6px;
+  }
+  .progress-track {
+    height: 4px;
+    background: #e5e3dd;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  #bar {
+    height: 100%;
+    width: 100%;
+    background: #378ADD;
+    transition: width 1s linear;
+  }
+  #err {
+    display: none;
+    font-size: 13px;
+    color: #c0392b;
+    margin-bottom: 8px;
+  }
+  #permHint {
+    display: none;
+    font-size: 12px;
+    color: #9a9a95;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <label for="secret">Secret key (Base32)</label>
+  <div class="input-row">
+    <input id="secret" type="text" placeholder="E6QT D2HK KZ5H BJGQ Q2K6 A3XX LZMI GM77" autocomplete="off" />
+    <button id="pasteBtn" aria-label="পেস্ট করুন">⎘</button>
+  </div>
+
+  <div id="err"></div>
+  <div id="permHint">প্রথমবার ব্রাউজার ক্লিপবোর্ড পারমিশন চাইবে, allow করলে পরের বার আর জিজ্ঞেস করবে না</div>
+
+  <div class="code-box">
+    <button id="refreshBtn" aria-label="নতুন কোড আনুন"><span id="refreshIcon">⟳</span></button>
+    <div id="code">------</div>
+    <div id="timeleft">--</div>
+  </div>
+
+  <div class="progress-track">
+    <div id="bar"></div>
+  </div>
+</div>
+
+<script>
+// ---- Base32 decode ----
+function base32Decode(input) {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  const clean = input.replace(/[^A-Z2-7]/gi, "").toUpperCase();
+  let bits = "";
+  for (const c of clean) {
+    const val = alphabet.indexOf(c);
+    if (val === -1) continue;
+    bits += val.toString(2).padStart(5, "0");
+  }
+  const bytes = [];
+  for (let i = 0; i + 8 <= bits.length; i += 8) {
+    bytes.push(parseInt(bits.slice(i, i + 8), 2));
+  }
+  return new Uint8Array(bytes);
+}
+
+// ---- HMAC-SHA1 via WebCrypto ----
+async function hmacSha1(keyBytes, msgBytes) {
+  const key = await crypto.subtle.importKey(
+    "raw", keyBytes, { name: "HMAC", hash: "SHA-1" }, false, ["sign"]
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, msgBytes);
+  return new Uint8Array(sig);
+}
+
+function intToBytes(num) {
+  const buf = new ArrayBuffer(8);
+  const view = new DataView(buf);
+  view.setUint32(4, num); // big-endian, high 4 bytes stay 0
+  return new Uint8Array(buf);
+}
+
+// ---- RFC 6238 TOTP ----
+async function totp(secretB32, counterOverride) {
+  const keyBytes = base32Decode(secretB32);
+  if (keyBytes.length === 0) return null;
+  const counter = counterOverride !== undefined
+    ? counterOverride
+    : Math.floor(Date.now() / 1000 / 30);
+  const msgBytes = intToBytes(counter);
+  const hmac = await hmacSha1(keyBytes, msgBytes);
+  const offset = hmac[hmac.length - 1] & 0xf;
+  const binCode = ((hmac[offset] & 0x7f) << 24) |
+                   ((hmac[offset + 1] & 0xff) << 16) |
+                   ((hmac[offset + 2] & 0xff) << 8) |
+                   (hmac[offset + 3] & 0xff);
+  const code = (binCode % 1000000).toString().padStart(6, "0");
+  return code;
+}
+
+// ---- UI wiring ----
+const secretInput = document.getElementById("secret");
+const codeEl = document.getElementById("code");
+const timeleftEl = document.getElementById("timeleft");
+const barEl = document.getElementById("bar");
+const errEl = document.getElementById("err");
+const permHintEl = document.getElementById("permHint");
+const pasteBtn = document.getElementById("pasteBtn");
+const refreshBtn = document.getElementById("refreshBtn");
+const refreshIcon = document.getElementById("refreshIcon");
+
+// Manual-refresh state: shows the code for (naturalWindow + offset) until
+// the natural 30s window itself advances past the window captured at click time.
+let overrideOffset = 0;
+let capturedWindow = null;
+
+async function render() {
+  const secret = secretInput.value.trim();
+  const now = Math.floor(Date.now() / 1000);
+  const remainder = now % 30;
+  const secsLeft = 30 - remainder;
+  const naturalWindow = Math.floor(now / 30);
+
+  if (capturedWindow !== null && naturalWindow !== capturedWindow) {
+    overrideOffset = 0;
+    capturedWindow = null;
+  }
+
+  barEl.style.width = ((secsLeft / 30) * 100) + "%";
+  timeleftEl.textContent = secsLeft + " সেকেন্ড পর রিফ্রেশ হবে";
+
+  if (!secret) {
+    codeEl.textContent = "------";
+    errEl.style.display = "none";
+    return;
+  }
+  try {
+    const targetCounter = naturalWindow + overrideOffset;
+    const code = await totp(secret, targetCounter);
+    if (code) {
+      codeEl.textContent = code.slice(0, 3) + " " + code.slice(3);
+      errEl.style.display = "none";
+    } else {
+      codeEl.textContent = "------";
+      errEl.textContent = "সঠিক Base32 কী দিন";
+      errEl.style.display = "block";
+    }
+  } catch (e) {
+    codeEl.textContent = "------";
+    errEl.textContent = "কী প্রসেস করা যায়নি";
+    errEl.style.display = "block";
+  }
+}
+
+// Check current permission state (if supported) to show a helpful hint
+// before the first click, without forcing a prompt.
+async function checkClipboardPermission() {
+  try {
+    if (navigator.permissions && navigator.permissions.query) {
+      const status = await navigator.permissions.query({ name: "clipboard-read" });
+      if (status.state === "prompt") {
+        permHintEl.style.display = "block";
+      }
+      status.onchange = () => {
+        if (status.state === "granted" || status.state === "denied") {
+          permHintEl.style.display = "none";
+        }
+      };
+    }
+  } catch (e) {
+    // permissions API for clipboard-read not supported in this browser; ignore
+  }
+}
+
+secretInput.addEventListener("input", () => {
+  overrideOffset = 0;
+  capturedWindow = null;
+  render();
+});
+
+pasteBtn.addEventListener("click", async () => {
+  try {
+    // Browser handles the permission prompt natively: first call asks,
+    // if the user clicks Allow it's remembered and future calls skip the prompt.
+    const text = await navigator.clipboard.readText();
+    if (text) {
+      secretInput.value = text.trim();
+      overrideOffset = 0;
+      capturedWindow = null;
+      permHintEl.style.display = "none";
+      render();
+    }
+  } catch (e) {
+    errEl.textContent = "ক্লিপবোর্ড অনুমতি দেওয়া হয়নি বা ব্লক করা আছে, ম্যানুয়ালি পেস্ট করুন";
+    errEl.style.display = "block";
+  }
+});
+
+refreshBtn.addEventListener("click", () => {
+  const now = Math.floor(Date.now() / 1000);
+  const naturalWindow = Math.floor(now / 30);
+  if (capturedWindow === null) {
+    capturedWindow = naturalWindow;
+    overrideOffset = 1;
+  } else {
+    overrideOffset += 1;
+  }
+  refreshIcon.style.transform = "rotate(360deg)";
+  refreshIcon.style.transition = "transform 0.4s";
+  setTimeout(() => {
+    refreshIcon.style.transform = "rotate(0deg)";
+    refreshIcon.style.transition = "none";
+  }, 450);
+  render();
+});
+
+checkClipboardPermission();
+setInterval(render, 1000);
+render();
+</script>
+
+</body>
+</html>

@@ -743,7 +743,13 @@
       showToast('Enter a secret key first');
       return;
     }
-    showToast('New code generated');
+    const code = otpDisplay.textContent.replace(/\s/g,'');
+    try{
+      await navigator.clipboard.writeText(code);
+      showToast('Code copied: ' + otpDisplay.textContent);
+    } catch(copyErr){
+      showToast('Generated — copy failed');
+    }
   });
 
   // --- QR scanning ---

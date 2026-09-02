@@ -26,6 +26,14 @@
 
   *{ box-sizing:border-box; }
 
+  button{
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:focus,
+  button:focus-visible{
+    outline: none;
+  }
+
   body{
     margin:0;
     min-height:100vh;
@@ -107,11 +115,21 @@
   }
   .refresh-pill{
     flex:0 0 auto;
-    padding:11px 18px;
+    width:44px;
+    height:44px;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     white-space:nowrap;
   }
-  .refresh-pill svg{ width:15px; height:15px; }
-  .refresh-pill.spinning svg{ animation: spin360 0.6s ease-out; }
+  .refresh-pill svg{
+    width:16px;
+    height:16px;
+  }
+  .refresh-pill.spinning svg{
+    animation: spin360 0.6s ease-out;
+  }
   @keyframes spin360{
     from{ transform: rotate(0deg); }
     to{ transform: rotate(360deg); }
@@ -285,7 +303,8 @@
     background: var(--field-bg);
     border:1px solid var(--panel-border);
     border-radius:10px;
-    padding:18px 10px;
+    padding:10px;
+    height:44px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -293,12 +312,12 @@
   .code-row{ margin-bottom:14px; }
   .code-box .otp{
     font-family: var(--mono);
-    font-size:26px;
+    font-size:18px;
     font-weight:600;
-    letter-spacing:4px;
+    letter-spacing:3px;
     color: var(--ink);
   }
-  .code-box .otp.placeholder{ color: var(--ink-faint); letter-spacing:6px; }
+  .code-box .otp.placeholder{ color: var(--ink-faint); letter-spacing:4px; }
 
   .btn-primary{
     width:100%;
@@ -452,9 +471,12 @@
         <div class="code-box">
           <div class="otp placeholder" id="otpDisplay">------</div>
         </div>
-        <button class="btn-secondary refresh-pill" id="refreshBtn" type="button" title="Recalculate now">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><polyline points="21 3 21 9 15 9"></polyline></svg>
-          Refresh
+        <button class="btn-secondary refresh-pill" id="refreshBtn" type="button" title="Recalculate now" aria-label="Refresh">
+          <svg viewBox="0 0 24 24">
+            <path d="M 10.580 1.899 A 10.2 10.2 0 0 1 14.248 5.688 A 10.2 10.2 0 0 1 22.144 10.934 L 17.172 11.456 A 5.2 5.2 0 0 0 11.276 6.851 Z" fill="#29D8EA"/>
+            <path d="M 21.457 15.821 A 10.2 10.2 0 0 1 16.342 17.102 A 10.2 10.2 0 0 1 7.851 21.318 L 9.885 16.750 A 5.2 5.2 0 0 0 16.821 13.948 Z" fill="#7C5CFC"/>
+            <path d="M 3.962 18.280 A 10.2 10.2 0 0 1 5.410 13.209 A 10.2 10.2 0 0 1 6.005 3.748 L 8.944 7.793 A 5.2 5.2 0 0 0 7.902 15.201 Z" fill="#5FE8D0"/>
+          </svg>
         </button>
       </div>
 

@@ -103,35 +103,81 @@
     await copyGenerated();
   });
 
-  let scanStream=null,scanRAF=null;
+  // ---- QR scanning ----
+  let scanStream=null,scanRAF=null,detector=null;
+  try{if('BarcodeDetector' in window)detector=new BarcodeDetector({formats:['qr_code']});}catch(e){}
+
+  function loadJsQR(){
+    return new Promise(res=>{
+      if(window.jsQR)return res();
+      const el=document.createElement('script');
+      el.src='https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+      el.onload=el.onerror=()=>res();
+      document.head.appendChild(el);
+    });
+  }
+  function base32Encode(bytes){
+    const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';let bits='',out='';
+    bytes.forEach(b=>bits+=b.toString(2).padStart(8,'0'));
+    for(let i=0;i<bits.length;i+=5)out+=A[parseInt(bits.substr(i,5).padEnd(5,'0'),2)];
+    return out;
+  }
+  // Google Authenticator "export accounts" QR (otpauth-migration://) -> first account's secret
+  function parseMigration(url){
+    try{
+      let d=new URL(url).searchParams.get('data').replace(/ /g,'+').replace(/-/g,'+').replace(/_/g,'/');
+      const bin=atob(d),buf=Uint8Array.from(bin,c=>c.charCodeAt(0));
+      const rd=(b,i)=>{let r=0,sh=0,c;do{c=b[i.p++];r+=(c&0x7f)*Math.pow(2,sh);sh+=7}while(c&0x80);return r};
+      const fields=(b)=>{const i={p:0},o=[];while(i.p<b.length){const t=rd(b,i),f=t>>3,w=t&7;
+        if(w===0)rd(b,i);else if(w===2){const l=rd(b,i);o.push([f,b.slice(i.p,i.p+l)]);i.p+=l}else if(w===1)i.p+=8;else if(w===5)i.p+=4;else break}return o};
+      const acc=fields(buf).find(x=>x[0]===1);
+      const sec=fields(acc[1]).find(x=>x[0]===1);
+      return base32Encode(sec[1]);
+    }catch(e){return null;}
+  }
+
   async function startScan(){
     scanOverlay.classList.add('show');scanStatus.textContent=t('scan_hint');
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){scanStatus.textContent=t('t_cam');return;}
     try{
-      scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-      scanVideo.srcObject=scanStream;await scanVideo.play();tickScan();
+      scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}});
+      scanVideo.srcObject=scanStream;await scanVideo.play();
+      if(!detector)await loadJsQR();
+      tickScan();
     }catch(e){scanStatus.textContent=t('t_cam');}
   }
   function stopScan(){
     if(scanRAF)cancelAnimationFrame(scanRAF);
     if(scanStream){scanStream.getTracks().forEach(x=>x.stop());scanStream=null;}
-    scanOverlay.classList.remove('show');
+    scanVideo.srcObject=null;scanOverlay.classList.remove('show');
   }
-  function tickScan(){
-    if(!scanStream)return;
-    const ctx=scanCanvas.getContext('2d',{willReadFrequently:true});
-    if(scanVideo.readyState===scanVideo.HAVE_ENOUGH_DATA){
-      scanCanvas.width=scanVideo.videoWidth;scanCanvas.height=scanVideo.videoHeight;
-      ctx.drawImage(scanVideo,0,0);
-      const img=ctx.getImageData(0,0,scanCanvas.width,scanCanvas.height);
-      if(window.jsQR){
-        const r=jsQR(img.data,img.width,img.height);
-        if(r&&r.data){
-          reset(r.data);stopScan();
-          refresh().then(()=>{if(validKey)copyGenerated();else showToast(t('t_qrbad'));});
-          return;
-        }
-      }
+  function onScanned(data){
+    if(data.startsWith('otpauth-migration://')){
+      data=parseMigration(data);
+      if(!data){stopScan();showToast(t('t_qrbad'));return;}
     }
+    reset(data);stopScan();
+    refresh().then(()=>{if(validKey)copyGenerated();else showToast(t('t_qrbad'));});
+  }
+  async function tickScan(){
+    if(!scanStream)return;
+    let data=null;
+    if(scanVideo.readyState>=2&&scanVideo.videoWidth){
+      try{
+        if(detector){const c=await detector.detect(scanVideo);if(c.length)data=c[0].rawValue;}
+        if(!data&&window.jsQR){
+          const w=Math.min(640,scanVideo.videoWidth),h=Math.round(w*scanVideo.videoHeight/scanVideo.videoWidth);
+          scanCanvas.width=w;scanCanvas.height=h;
+          const ctx=scanCanvas.getContext('2d',{willReadFrequently:true});
+          ctx.drawImage(scanVideo,0,0,w,h);
+          const img=ctx.getImageData(0,0,w,h);
+          const r=jsQR(img.data,w,h,{inversionAttempts:'attemptBoth'});
+          if(r&&r.data)data=r.data;
+        }
+      }catch(e){}
+    }
+    if(!scanStream)return;
+    if(data){onScanned(data);return;}
     scanRAF=requestAnimationFrame(tickScan);
   }
   scanBtn.addEventListener('click',startScan);

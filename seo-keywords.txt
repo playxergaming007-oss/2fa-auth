@@ -1,0 +1,10 @@
+=== RU (main) ===
+2fa генератор онлайн; 2fa код онлайн; генератор totp; google authenticator онлайн; двухфакторная аутентификация онлайн; получить 2fa код по секретному ключу; 2fa authenticator без установки; otp генератор онлайн; qr код 2fa сканер; 2fa ключ в код; генератор кодов подтверждения; аутентификатор онлайн бесплатно; 2fa для telegram / binance / instagram / facebook / steam; totp секретный ключ base32
+=== EN ===
+2fa code generator online; totp generator; online authenticator; google authenticator online; 2fa secret key to code; two factor authentication code generator; otp generator online free; scan 2fa qr code online; 2fa authenticator no install; 2fa extractor
+=== ES ===
+generador de códigos 2fa online; generador totp; autenticador online gratis; google authenticator online; código 2fa con clave secreta; autenticación en dos pasos; escáner qr 2fa
+=== FR ===
+générateur de code 2fa en ligne; générateur totp; authentificateur en ligne gratuit; google authenticator en ligne; code 2fa clé secrète; double authentification; scanner qr 2fa
+=== AR ===
+مولد رموز 2fa; مولد totp اونلاين; مصادق جوجل اونلاين; رمز التحقق بخطوتين; المصادقة الثنائية; مسح qr 2fa; مفتاح 2fa سري

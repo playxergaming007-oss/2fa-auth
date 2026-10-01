@@ -4,7 +4,7 @@ body{margin:0;background:radial-gradient(circle at 12% 4%,rgba(124,92,252,.10),t
 a{color:inherit;text-decoration:none}a:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 .container{max-width:1040px;margin:0 auto;padding:0 20px}
 header.top{position:sticky;top:0;z-index:20;background:rgba(10,12,19,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.top .container{display:flex;align-items:center;gap:20px;min-height:64px;flex-wrap:wrap}
+.top .container{display:flex;align-items:center;gap:12px 20px;min-height:64px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
 .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
 .logo i{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:flex;align-items:center;justify-content:center}
 .logo svg{width:18px;height:18px;color:#fff}
@@ -12,12 +12,11 @@ header.top{position:sticky;top:0;z-index:20;background:rgba(10,12,19,.85);backdr
 .top nav a{padding:8px 14px;border-radius:9px;color:var(--dim);font-weight:500;white-space:nowrap}
 .top nav a:hover{color:var(--ink);background:rgba(255,255,255,.05)}
 .top select{background:#171A26;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px;cursor:pointer}
-@media(max-width:700px){.top nav{order:3;width:100%;margin:0 0 8px}.top .container{gap:10px}.top select{margin-inline-start:auto}}
+@media(max-width:700px){.top nav{order:3;width:100%;margin:0}.top .container{gap:8px 10px;padding-top:12px;padding-bottom:8px}.top select{margin-inline-start:auto}}
 .hero{padding-top:72px;padding-bottom:40px}.hero>*{max-width:740px}
 .hero h1{font-size:clamp(30px,5vw,48px);line-height:1.15;margin:0 0 18px;font-weight:800;letter-spacing:-.5px}
-.hero p{color:var(--dim);font-size:18px;margin:0 0 28px}
-.cta{display:inline-block;background:linear-gradient(90deg,var(--cyan),var(--violet));color:#0A0C13;font-weight:700;padding:14px 26px;border-radius:12px}
-.cta:hover{filter:brightness(1.08)}
+.hero p{color:var(--dim);font-size:18px;margin:0}
+.ad-slot{width:100%;margin:0 auto}.ad-top{min-height:120px;margin-top:8px}.ad-slim{min-height:90px;margin:8px auto 0}
 section{padding:48px 0}
 section>.container>h2{font-size:28px;margin:0 0 24px;font-weight:700}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}

@@ -23,11 +23,30 @@
     const bin=((h[o]&0x7f)<<24)|((h[o+1]&0xff)<<16)|((h[o+2]&0xff)<<8)|(h[o+3]&0xff);
     return(bin%1_000_000).toString().padStart(6,'0');
   }
-  function extractSecret(raw){
-    const s=raw.trim();
-    if(s.startsWith('otpauth://')){try{const v=new URL(s).searchParams.get('secret');if(v)return v;}catch(e){}}
-    return s;
+  const B32=/^[A-Z2-7]+=*$/;
+  // Validates typed/pasted text or QR content. Returns {ok,secret} | {err:key} | {short:true} | {empty:true}
+  function analyze(raw,fromQr){
+    const s=(raw||'').trim();
+    if(!s)return{empty:true};
+    if(/^otpauth-migration:\/\//i.test(s)){const k=parseMigration(s);return k?{ok:true,secret:k}:{err:'q_migr'};}
+    if(/^otpauth:\/\//i.test(s)){
+      let u;try{u=new URL(s);}catch(e){return{err:'q_invalid'};}
+      if(u.hostname.toLowerCase()!=='totp')return{err:'q_unsup'};
+      const p=u.searchParams,sec=(p.get('secret')||'').replace(/[\s-]/g,'').toUpperCase();
+      if(!sec||!B32.test(sec))return{err:'q_invalid'};
+      if((p.get('algorithm')||'SHA1').toUpperCase()!=='SHA1'||(p.get('digits')||'6')!=='6'||(p.get('period')||'30')!=='30')return{err:'q_unsup'};
+      return{ok:true,secret:sec};
+    }
+    if(/^[a-z][a-z0-9+.-]*:\/\//i.test(s)||/^www\./i.test(s))return{err:fromQr?'q_notfa':'k_url'};
+    const c=s.replace(/[\s-]/g,'').toUpperCase();
+    if(fromQr)return/^[A-Z2-7]{16,}$/.test(s.replace(/[\s-]/g,''))?{ok:true,secret:c}:{err:'q_text'};
+    if(!B32.test(c))return{err:'k_invalid'};
+    if(c.length<8)return{short:true};
+    return{ok:true,secret:c};
   }
+  const keyErr=$('keyError');
+  function showKeyErr(k){keyErr.textContent=k?t(k):'';keyErr.hidden=!k;}
+
   let lastCode=null,manualOffset=0,lastRealWindow=null,validKey=false;
   const formatCode=c=>c.slice(0,3)+' '+c.slice(3);
 
@@ -39,19 +58,17 @@
     return'hsl('+(a.h+(b.h-a.h)*t).toFixed(0)+', '+(a.s+(b.s-a.s)*t).toFixed(0)+'%, '+(a.l+(b.l-a.l)*t).toFixed(0)+'%)';
   }
 
+  function idle(){
+    otpDisplay.textContent='------';otpDisplay.classList.add('placeholder');timerNum.textContent='--';
+    copyBtn.disabled=true;validKey=false;segCover.style.width='100%';
+  }
   async function refresh(){
-    const secretVal=extractSecret(secretInput.value);
-    secretInput.classList.remove('invalid');
-    if(!secretVal){
-      otpDisplay.textContent='------';otpDisplay.classList.add('placeholder');timerNum.textContent='--';
-      copyBtn.disabled=true;validKey=false;segCover.style.width='100%';return;
-    }
-    let keyBytes;
-    try{keyBytes=base32Decode(secretVal);if(!keyBytes.length)throw 0;}
-    catch(e){
-      secretInput.classList.add('invalid');otpDisplay.textContent='ERROR';otpDisplay.classList.add('placeholder');
-      copyBtn.disabled=true;validKey=false;segCover.style.width='100%';return;
-    }
+    const a=analyze(secretInput.value);
+    secretInput.classList.remove('invalid');showKeyErr(null);
+    if(a.empty||a.short){idle();return;}
+    if(a.err){secretInput.classList.add('invalid');showKeyErr(a.err);idle();return;}
+    const keyBytes=base32Decode(a.secret);
+    if(!keyBytes.length){secretInput.classList.add('invalid');showKeyErr('k_invalid');idle();return;}
     validKey=true;
     const rw=Math.floor(Math.floor(Date.now()/1000)/30);
     if(lastRealWindow!==null&&rw!==lastRealWindow)manualOffset=0;
@@ -95,6 +112,7 @@
     }catch(e){showToast(t('t_clip'));}
   });
   secretInput.addEventListener('input',()=>{lastCode=null;manualOffset=0;updateClearBtn();refresh();});
+  secretInput.addEventListener('blur',()=>{const a=analyze(secretInput.value);if(a.short){secretInput.classList.add('invalid');showKeyErr('k_short');}});
   clearKeyBtn.addEventListener('click',()=>{reset('');refresh();secretInput.focus();});
   refreshBtn.addEventListener('click',async()=>{
     refreshBtn.classList.remove('spinning');void refreshBtn.offsetWidth;refreshBtn.classList.add('spinning');
@@ -136,28 +154,64 @@
     }catch(e){return null;}
   }
 
+  const scanFrame=$('scanFrame'),scanError=$('scanError'),scanRetry=$('scanRetry');
+  let scanTimer=null;
+  function showScanView(){
+    scanFrame.hidden=false;scanStatus.hidden=false;scanError.hidden=true;
+    scanFrame.classList.remove('bad');scanStatus.classList.remove('err');scanStatus.textContent=t('scan_hint');
+  }
+  function stopStream(){
+    if(scanRAF){cancelAnimationFrame(scanRAF);scanRAF=null;}
+    if(scanTimer){clearTimeout(scanTimer);scanTimer=null;}
+    if(scanStream){scanStream.getTracks().forEach(x=>x.stop());scanStream=null;}
+    scanVideo.srcObject=null;
+  }
+  function stopScan(){stopStream();scanOverlay.classList.remove('show');}
+  function camErr(e){
+    if(!window.isSecureContext)return'c_insecure';
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return'c_unsup';
+    const n=e&&e.name;
+    if(n==='NotAllowedError'||n==='SecurityError'||n==='PermissionDeniedError')return'c_denied';
+    if(n==='NotFoundError'||n==='DevicesNotFoundError'||n==='OverconstrainedError')return'c_none';
+    if(n==='NotReadableError'||n==='TrackStartError'||n==='AbortError')return'c_busy';
+    return'c_err';
+  }
+  function showCamError(k){
+    stopStream();
+    const p=t(k).split('|');
+    $('scanErrTitle').textContent=p[0];$('scanErrText').textContent=p[1]||'';
+    const h=$('scanErrHint');h.textContent=p[2]||'';h.hidden=!p[2];
+    scanFrame.hidden=true;scanStatus.hidden=true;scanError.hidden=false;
+  }
   async function startScan(){
-    scanOverlay.classList.add('show');scanStatus.textContent=t('scan_hint');
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){scanStatus.textContent=t('t_cam');return;}
+    scanOverlay.classList.add('show');showScanView();
+    if(!window.isSecureContext||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){showCamError(camErr());return;}
     try{
-      scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}});
+      try{scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}});}
+      catch(e){
+        if(e&&(e.name==='NotFoundError'||e.name==='OverconstrainedError'))scanStream=await navigator.mediaDevices.getUserMedia({video:true});
+        else throw e;
+      }
+      if(!scanOverlay.classList.contains('show')){stopStream();return;}
       scanVideo.srcObject=scanStream;await scanVideo.play();
       if(!detector)await loadJsQR();
+      if(!scanStream)return;
       tickScan();
-    }catch(e){scanStatus.textContent=t('t_cam');}
+    }catch(e){showCamError(camErr(e));}
   }
-  function stopScan(){
-    if(scanRAF)cancelAnimationFrame(scanRAF);
-    if(scanStream){scanStream.getTracks().forEach(x=>x.stop());scanStream=null;}
-    scanVideo.srcObject=null;scanOverlay.classList.remove('show');
+  function rejectScan(k){
+    scanStatus.textContent=t(k);scanStatus.classList.add('err');scanFrame.classList.add('bad');
+    try{navigator.vibrate&&navigator.vibrate(120);}catch(e){}
+    scanTimer=setTimeout(()=>{
+      scanTimer=null;if(!scanStream)return;
+      showScanView();tickScan();
+    },2800);
   }
   function onScanned(data){
-    if(data.startsWith('otpauth-migration://')){
-      data=parseMigration(data);
-      if(!data){stopScan();showToast(t('t_qrbad'));return;}
-    }
-    reset(data);stopScan();
-    refresh().then(()=>{if(validKey)copyGenerated();else showToast(t('t_qrbad'));});
+    const a=analyze(data,true);
+    if(!a.ok){rejectScan(a.err||'q_invalid');return;}
+    reset(a.secret);stopScan();
+    refresh().then(()=>{if(validKey)copyGenerated();});
   }
   async function tickScan(){
     if(!scanStream)return;
@@ -180,6 +234,7 @@
     if(data){onScanned(data);return;}
     scanRAF=requestAnimationFrame(tickScan);
   }
+  scanRetry.addEventListener('click',startScan);
   scanBtn.addEventListener('click',startScan);
   scanClose.addEventListener('click',stopScan);
 

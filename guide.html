@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Как пользоваться 2FA-генератором — 2FA Authenticator</title>
+<meta name="description" content="Короткая пошаговая инструкция: от получения секретного ключа до ввода 6-значного кода.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://2faauth.org/guide.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-page="guide">
+<div id="hdr"></div>
+<main class="container guide">
+  <h1 data-i18n="g_title"></h1>
+  <p class="lead" data-i18n="g_intro"></p>
+
+  <h2 data-i18n="g_video"></h2>
+  <!-- ▼ VIDEO: put your YouTube video ID below (e.g. dQw4w9WgXcQ). Leave empty to show the placeholder. -->
+  <div class="video" id="videoBox"><div><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span data-i18n="g_soon"></span></div></div>
+  <script>
+    var YT_ID = '';
+    if (YT_ID) {
+      var b = document.getElementById('videoBox');
+      b.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + YT_ID + '" title="Video guide" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+      b.style.border = 'none';
+    }
+  </script>
+
+  <h2 data-i18n="g_steps"></h2>
+  <ol class="steps">
+    <li data-pair="gs1"><h3></h3><p></p></li>
+    <li data-pair="gs2"><h3></h3><p></p></li>
+    <li data-pair="gs3"><h3></h3><p></p></li>
+    <li data-pair="gs4"><h3></h3><p></p></li>
+    <li data-pair="gs5"><h3></h3><p></p></li>
+  </ol>
+  <a class="btn" href="/#tools" data-i18n="g_open"></a>
+</main>
+<div id="ftr"></div>
+<script src="assets/i18n.js"></script>
+</body>
+</html>

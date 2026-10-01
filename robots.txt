@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://2fa-auth-production-a803.up.railway.app/sitemap.xml

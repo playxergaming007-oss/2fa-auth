@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://2fa-auth-production-a803.up.railway.app/</loc></url>
-<url><loc>https://2fa-auth-production-a803.up.railway.app/about.html</loc></url>
-<url><loc>https://2fa-auth-production-a803.up.railway.app/contact.html</loc></url>
-<url><loc>https://2fa-auth-production-a803.up.railway.app/privacy.html</loc></url>
-<url><loc>https://2fa-auth-production-a803.up.railway.app/disclaimer.html</loc></url>
-<url><loc>https://2fa-auth-production-a803.up.railway.app/terms.html</loc></url>
+<url><loc>https://2faauth.org/</loc></url>
+<url><loc>https://2faauth.org/about.html</loc></url>
+<url><loc>https://2faauth.org/contact.html</loc></url>
+<url><loc>https://2faauth.org/privacy.html</loc></url>
+<url><loc>https://2faauth.org/disclaimer.html</loc></url>
+<url><loc>https://2faauth.org/terms.html</loc></url>
 </urlset>

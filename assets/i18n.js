@@ -13,7 +13,7 @@ const SOC=[
 ];
 // Docs: "Title|paragraph|paragraph"   Pairs: "Title|Text"
 const D={
-ru:{title:'2FA генератор кодов онлайн — TOTP Authenticator без установки | 2FA Extractor',desc:'Бесплатный онлайн 2FA генератор: получите TOTP-код из секретного ключа или QR-кода. Google Authenticator онлайн, без регистрации, работает в браузере.',
+ru:{title:'2FA Authenticator — генератор 2FA кодов онлайн (TOTP) без установки',desc:'Бесплатный онлайн 2FA генератор: получите TOTP-код из секретного ключа или QR-кода. Google Authenticator онлайн, без регистрации, работает в браузере.',
 nav_home:'Главная',nav_tools:'Инструменты',nav_features:'Возможности',nav_faq:'FAQ',
 h1:'2FA-коды онлайн: генератор TOTP по секретному ключу',sub:'Введите секретный ключ или отсканируйте QR-код — и получите 6-значный код двухфакторной аутентификации. Всё считается в вашем браузере, ключи никуда не отправляются.',cta:'Получить код',
 tool_title:'Генератор 2FA кодов',key:'Секретный ключ',key_ph:'Например: GAXG 243E MR2X QZ...',paste:'Вставить ключ',scan:'Скан QR',token:'Активный код',copy:'Копировать код',cancel:'Отмена',scan_hint:'Наведите камеру на QR-код',
@@ -29,12 +29,12 @@ q2:'Безопасно ли вводить ключ здесь?|Вычислен
 q3:'Чем это отличается от Google Authenticator?|Алгоритм тот же (TOTP), поэтому коды совпадают. Здесь ничего не нужно устанавливать, но хранение ключа — на вас.',
 q4:'Почему код не подходит?|Проверьте ключ и время на устройстве: расхождение больше 30 секунд даёт неверный код.',
 ft_about:'О нас',ft_contact:'Контакты',ft_privacy:'Политика конфиденциальности',ft_disclaimer:'Отказ от ответственности',ft_terms:'Условия использования',follow:'Мы в соцсетях',rights:'Все права защищены.',
-about:'О нас|2FA Extractor — бесплатный онлайн-инструмент для генерации одноразовых TOTP-кодов.|Мы делаем двухфакторную аутентификацию проще: без установки приложений и без регистрации.',
-contact:'Контакты|Вопросы, предложения и сообщения об ошибках — пишите на support@example.com.|Мы отвечаем в течение нескольких рабочих дней.',
+about:'О нас|2FA Auths — бесплатный онлайн-инструмент для генерации одноразовых TOTP-кодов.|Мы делаем двухфакторную аутентификацию проще: без установки приложений и без регистрации.',
+contact:'Контакты|Вопросы, предложения и сообщения об ошибках — пишите на support@2faauth.org.|Мы отвечаем в течение нескольких рабочих дней.',
 privacy:'Политика конфиденциальности|Секретные ключи и коды обрабатываются только в вашем браузере и не отправляются и не хранятся на нашем сервере.|Мы можем использовать обезличенную аналитику и файлы cookie для улучшения сайта. Выбранный язык хранится в localStorage вашего браузера.|Используя сайт, вы соглашаетесь с этой политикой.',
 disclaimer:'Отказ от ответственности|Инструмент предоставляется «как есть», без каких-либо гарантий.|Вы сами отвечаете за хранение секретных ключей и доступ к своим аккаунтам. Мы не несём ответственности за потерю доступа или ущерб от использования сервиса.',
 terms:'Условия использования|Используя сайт, вы соглашаетесь применять его только в законных целях и только для собственных аккаунтов.|Запрещено использовать сервис для доступа к чужим аккаунтам. Мы вправе изменять сайт и эти условия без предварительного уведомления.'},
-en:{title:'2FA Code Generator Online — Free TOTP Authenticator | 2FA Extractor',desc:'Free online 2FA generator: get a TOTP code from a secret key or QR code. Google Authenticator online, no sign-up, runs in your browser.',
+en:{title:'2FA Authenticator — Free Online 2FA Code Generator (TOTP)',desc:'Free online 2FA generator: get a TOTP code from a secret key or QR code. Google Authenticator online, no sign-up, runs in your browser.',
 nav_home:'Home',nav_tools:'Tools',nav_features:'Features',nav_faq:'FAQ',
 h1:'Online 2FA codes: TOTP generator from a secret key',sub:'Enter a secret key or scan a QR code to get your 6-digit two-factor authentication code. Everything is calculated in your browser — keys are never sent anywhere.',cta:'Get my code',
 tool_title:'2FA code generator',key:'Secret key',key_ph:'e.g. GAXG 243E MR2X QZ...',paste:'Paste key',scan:'Scan QR',token:'Active code',copy:'Copy code',cancel:'Cancel',scan_hint:'Point the camera at a QR code',
@@ -50,12 +50,12 @@ q2:'Is it safe to enter my key here?|All calculations happen in your browser and
 q3:'How is this different from Google Authenticator?|The algorithm is the same (TOTP), so the codes match. Nothing to install here, but you are responsible for storing the key.',
 q4:'Why is my code rejected?|Check the key and your device clock: a drift of more than 30 seconds produces wrong codes.',
 ft_about:'About us',ft_contact:'Contact us',ft_privacy:'Privacy policy',ft_disclaimer:'Disclaimer',ft_terms:'Terms and conditions',follow:'Follow us',rights:'All rights reserved.',
-about:'About us|2FA Extractor is a free online tool for generating one-time TOTP codes.|We make two-factor authentication simpler: no app to install and no sign-up.',
-contact:'Contact us|For questions, suggestions or bug reports, write to support@example.com.|We reply within a few business days.',
+about:'About us|2FA Auths is a free online tool for generating one-time TOTP codes.|We make two-factor authentication simpler: no app to install and no sign-up.',
+contact:'Contact us|For questions, suggestions or bug reports, write to support@2faauth.org.|We reply within a few business days.',
 privacy:'Privacy policy|Secret keys and codes are processed only in your browser. They are not sent to or stored on our server.|We may use anonymous analytics and cookies to improve the site. Your language choice is kept in your browser\'s localStorage.|By using the site you agree to this policy.',
 disclaimer:'Disclaimer|The tool is provided "as is", without warranties of any kind.|You are responsible for storing your secret keys and for access to your accounts. We are not liable for loss of access or any damage from using the service.',
 terms:'Terms and conditions|By using this site you agree to use it lawfully and only for your own accounts.|Using the service to access accounts that are not yours is prohibited. We may change the site and these terms without prior notice.'},
-es:{title:'Generador de códigos 2FA online — Autenticador TOTP gratis | 2FA Extractor',desc:'Generador 2FA online gratuito: obtén un código TOTP desde una clave secreta o un código QR. Google Authenticator online, sin registro.',
+es:{title:'2FA Authenticator — Generador de códigos 2FA online gratis (TOTP)',desc:'Generador 2FA online gratuito: obtén un código TOTP desde una clave secreta o un código QR. Google Authenticator online, sin registro.',
 nav_home:'Inicio',nav_tools:'Herramientas',nav_features:'Funciones',nav_faq:'FAQ',
 h1:'Códigos 2FA online: generador TOTP con clave secreta',sub:'Introduce una clave secreta o escanea un código QR y obtén tu código de 6 dígitos de autenticación en dos pasos. Todo se calcula en tu navegador; las claves no se envían a ningún sitio.',cta:'Obtener código',
 tool_title:'Generador de códigos 2FA',key:'Clave secreta',key_ph:'Ej.: GAXG 243E MR2X QZ...',paste:'Pegar clave',scan:'Escanear QR',token:'Código activo',copy:'Copiar código',cancel:'Cancelar',scan_hint:'Apunta la cámara a un código QR',
@@ -71,12 +71,12 @@ q2:'¿Es seguro introducir mi clave aquí?|Los cálculos se hacen solo en tu nav
 q3:'¿En qué se diferencia de Google Authenticator?|El algoritmo es el mismo (TOTP), así que los códigos coinciden. Aquí no se instala nada, pero tú guardas la clave.',
 q4:'¿Por qué no funciona mi código?|Revisa la clave y la hora del dispositivo: un desfase de más de 30 segundos da códigos incorrectos.',
 ft_about:'Sobre nosotros',ft_contact:'Contacto',ft_privacy:'Política de privacidad',ft_disclaimer:'Aviso legal',ft_terms:'Términos y condiciones',follow:'Síguenos',rights:'Todos los derechos reservados.',
-about:'Sobre nosotros|2FA Extractor es una herramienta online gratuita para generar códigos TOTP de un solo uso.|Hacemos más sencilla la autenticación en dos pasos: sin instalar apps y sin registro.',
-contact:'Contacto|Para preguntas, sugerencias o errores, escribe a support@example.com.|Respondemos en unos pocos días laborables.',
+about:'Sobre nosotros|2FA Auths es una herramienta online gratuita para generar códigos TOTP de un solo uso.|Hacemos más sencilla la autenticación en dos pasos: sin instalar apps y sin registro.',
+contact:'Contacto|Para preguntas, sugerencias o errores, escribe a support@2faauth.org.|Respondemos en unos pocos días laborables.',
 privacy:'Política de privacidad|Las claves secretas y los códigos se procesan solo en tu navegador; no se envían ni se guardan en nuestro servidor.|Podemos usar analítica anónima y cookies para mejorar el sitio. El idioma elegido se guarda en el localStorage de tu navegador.|Al usar el sitio aceptas esta política.',
 disclaimer:'Aviso legal|La herramienta se ofrece «tal cual», sin garantías de ningún tipo.|Eres responsable de guardar tus claves secretas y del acceso a tus cuentas. No respondemos por la pérdida de acceso ni por daños derivados del uso del servicio.',
 terms:'Términos y condiciones|Al usar este sitio aceptas hacerlo de forma legal y solo con tus propias cuentas.|Está prohibido usar el servicio para acceder a cuentas ajenas. Podemos modificar el sitio y estos términos sin previo aviso.'},
-fr:{title:'Générateur de codes 2FA en ligne — Authentificateur TOTP gratuit | 2FA Extractor',desc:'Générateur 2FA gratuit en ligne : obtenez un code TOTP à partir d\'une clé secrète ou d\'un QR code. Google Authenticator en ligne, sans inscription.',
+fr:{title:'2FA Authenticator — Générateur de codes 2FA en ligne gratuit (TOTP)',desc:'Générateur 2FA gratuit en ligne : obtenez un code TOTP à partir d\'une clé secrète ou d\'un QR code. Google Authenticator en ligne, sans inscription.',
 nav_home:'Accueil',nav_tools:'Outils',nav_features:'Fonctionnalités',nav_faq:'FAQ',
 h1:'Codes 2FA en ligne : générateur TOTP à partir d\'une clé secrète',sub:'Saisissez une clé secrète ou scannez un QR code pour obtenir votre code d\'authentification à 6 chiffres. Tout est calculé dans votre navigateur ; vos clés ne sont jamais envoyées.',cta:'Obtenir mon code',
 tool_title:'Générateur de codes 2FA',key:'Clé secrète',key_ph:'Ex. : GAXG 243E MR2X QZ...',paste:'Coller la clé',scan:'Scanner QR',token:'Code actif',copy:'Copier le code',cancel:'Annuler',scan_hint:'Dirigez la caméra vers un QR code',
@@ -92,12 +92,12 @@ q2:'Est-il sûr de saisir ma clé ici ?|Les calculs se font uniquement dans votr
 q3:'Quelle différence avec Google Authenticator ?|L\'algorithme est le même (TOTP), donc les codes sont identiques. Rien à installer ici, mais vous gardez vous-même la clé.',
 q4:'Pourquoi mon code est refusé ?|Vérifiez la clé et l\'heure de votre appareil : un décalage de plus de 30 secondes donne des codes erronés.',
 ft_about:'À propos',ft_contact:'Contact',ft_privacy:'Politique de confidentialité',ft_disclaimer:'Avertissement',ft_terms:'Conditions d\'utilisation',follow:'Suivez-nous',rights:'Tous droits réservés.',
-about:'À propos|2FA Extractor est un outil en ligne gratuit pour générer des codes TOTP à usage unique.|Nous simplifions la double authentification : aucune application à installer, aucune inscription.',
-contact:'Contact|Pour toute question, suggestion ou bug, écrivez à support@example.com.|Nous répondons sous quelques jours ouvrés.',
+about:'À propos|2FA Auths est un outil en ligne gratuit pour générer des codes TOTP à usage unique.|Nous simplifions la double authentification : aucune application à installer, aucune inscription.',
+contact:'Contact|Pour toute question, suggestion ou bug, écrivez à support@2faauth.org.|Nous répondons sous quelques jours ouvrés.',
 privacy:'Politique de confidentialité|Les clés secrètes et les codes sont traités uniquement dans votre navigateur ; ils ne sont ni envoyés ni stockés sur notre serveur.|Nous pouvons utiliser des statistiques anonymes et des cookies pour améliorer le site. Votre langue est conservée dans le localStorage de votre navigateur.|En utilisant le site, vous acceptez cette politique.',
 disclaimer:'Avertissement|L\'outil est fourni « tel quel », sans garantie d\'aucune sorte.|Vous êtes responsable de la conservation de vos clés secrètes et de l\'accès à vos comptes. Nous déclinons toute responsabilité en cas de perte d\'accès ou de dommage lié à l\'utilisation du service.',
 terms:'Conditions d\'utilisation|En utilisant ce site, vous acceptez de l\'utiliser légalement et uniquement pour vos propres comptes.|Il est interdit d\'utiliser le service pour accéder à des comptes qui ne vous appartiennent pas. Nous pouvons modifier le site et ces conditions sans préavis.'},
-ar:{title:'مولّد رموز 2FA أونلاين — مصادق TOTP مجاني | 2FA Extractor',desc:'مولّد 2FA مجاني أونلاين: احصل على رمز TOTP من المفتاح السري أو رمز QR. Google Authenticator أونلاين دون تسجيل ويعمل في المتصفح.',
+ar:{title:'2FA Authenticator — مولّد رموز 2FA أونلاين مجاني (TOTP)',desc:'مولّد 2FA مجاني أونلاين: احصل على رمز TOTP من المفتاح السري أو رمز QR. Google Authenticator أونلاين دون تسجيل ويعمل في المتصفح.',
 nav_home:'الرئيسية',nav_tools:'الأدوات',nav_features:'المزايا',nav_faq:'الأسئلة الشائعة',
 h1:'رموز 2FA أونلاين: مولّد TOTP من المفتاح السري',sub:'أدخل المفتاح السري أو امسح رمز QR لتحصل على رمز المصادقة الثنائية المكوّن من 6 أرقام. يتم الحساب كله داخل متصفحك ولا يُرسل أي مفتاح إلى أي مكان.',cta:'احصل على الرمز',
 tool_title:'مولّد رموز 2FA',key:'المفتاح السري',key_ph:'مثال: GAXG 243E MR2X QZ...',paste:'لصق المفتاح',scan:'مسح QR',token:'الرمز الحالي',copy:'نسخ الرمز',cancel:'إلغاء',scan_hint:'وجّه الكاميرا نحو رمز QR',
@@ -113,8 +113,8 @@ q2:'هل إدخال مفتاحي هنا آمن؟|تتم الحسابات داخ�
 q3:'ما الفرق عن Google Authenticator؟|الخوارزمية نفسها (TOTP) لذا تتطابق الرموز. لا حاجة للتثبيت هنا، لكنك مسؤول عن حفظ المفتاح.',
 q4:'لماذا لا يعمل الرمز؟|تحقق من المفتاح ومن ساعة جهازك؛ فارق يزيد على 30 ثانية يعطي رموزاً خاطئة.',
 ft_about:'من نحن',ft_contact:'اتصل بنا',ft_privacy:'سياسة الخصوصية',ft_disclaimer:'إخلاء المسؤولية',ft_terms:'الشروط والأحكام',follow:'تابعنا',rights:'جميع الحقوق محفوظة.',
-about:'من نحن|2FA Extractor أداة مجانية أونلاين لتوليد رموز TOTP لمرة واحدة.|نجعل المصادقة الثنائية أسهل: بلا تثبيت تطبيقات وبلا تسجيل.',
-contact:'اتصل بنا|للأسئلة والاقتراحات والإبلاغ عن الأخطاء راسلنا على support@example.com.|نرد خلال أيام عمل قليلة.',
+about:'من نحن|2FA Auths أداة مجانية أونلاين لتوليد رموز TOTP لمرة واحدة.|نجعل المصادقة الثنائية أسهل: بلا تثبيت تطبيقات وبلا تسجيل.',
+contact:'اتصل بنا|للأسئلة والاقتراحات والإبلاغ عن الأخطاء راسلنا على support@2faauth.org.|نرد خلال أيام عمل قليلة.',
 privacy:'سياسة الخصوصية|تُعالَج المفاتيح السرية والرموز داخل متصفحك فقط، ولا تُرسل إلى خادمنا ولا تُخزَّن عليه.|قد نستخدم تحليلات مجهولة وملفات تعريف الارتباط لتحسين الموقع. تُحفظ لغتك المختارة في localStorage بمتصفحك.|باستخدامك الموقع فإنك توافق على هذه السياسة.',
 disclaimer:'إخلاء المسؤولية|تُقدَّم الأداة «كما هي» دون أي ضمانات.|أنت المسؤول عن حفظ مفاتيحك السرية والوصول إلى حساباتك. لا نتحمل مسؤولية فقدان الوصول أو أي ضرر ناتج عن استخدام الخدمة.',
 terms:'الشروط والأحكام|باستخدامك هذا الموقع توافق على استخدامه بصورة قانونية ولحساباتك الخاصة فقط.|يُمنع استخدام الخدمة للوصول إلى حسابات لا تملكها. يحق لنا تعديل الموقع وهذه الشروط دون إشعار مسبق.'}
@@ -124,15 +124,15 @@ window.t=k=>(D[cur][k]??D.ru[k]??k);
 const page=document.body.dataset.page,home=page==='home';
 const el=(s,h)=>{const e=document.getElementById(s);if(e)e.innerHTML=h};
 const logo='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a4 4 0 0 0-4-4z"/><line x1="12" y1="14" x2="12" y2="17"/></svg>';
-el('hdr','<header class="top"><div class="container"><a class="logo" href="index.html"><i>'+logo+'</i>2FA Extractor</a><nav aria-label="Main"><a href="index.html#home" data-i18n="nav_home"></a><a href="index.html#tools" data-i18n="nav_tools"></a><a href="index.html#features" data-i18n="nav_features"></a><a href="index.html#faq" data-i18n="nav_faq"></a></nav><select id="lang" aria-label="Language">'+Object.keys(LANGS).map(k=>'<option value="'+k+'">'+LANGS[k]+'</option>').join('')+'</select></div></header>');
-el('ftr','<footer class="bot"><div class="container"><nav class="flinks"><a href="about.html" data-i18n="ft_about"></a><a href="contact.html" data-i18n="ft_contact"></a><a href="privacy.html" data-i18n="ft_privacy"></a><a href="disclaimer.html" data-i18n="ft_disclaimer"></a><a href="terms.html" data-i18n="ft_terms"></a></nav><div class="follow" data-i18n="follow"></div><div class="social">'+SOC.map(s=>'<a href="'+s[1]+'" target="_blank" rel="noopener me" aria-label="'+s[0]+'" title="'+s[0]+'"><svg viewBox="0 0 24 24">'+s[2]+'</svg></a>').join('')+'</div><div class="copy">© '+new Date().getFullYear()+' 2FA Extractor. <span data-i18n="rights"></span></div></div></footer>');
+el('hdr','<header class="top"><div class="container"><a class="logo" href="index.html"><i>'+logo+'</i>2FA Auths</a><nav aria-label="Main"><a href="index.html#home" data-i18n="nav_home"></a><a href="index.html#tools" data-i18n="nav_tools"></a><a href="index.html#features" data-i18n="nav_features"></a><a href="index.html#faq" data-i18n="nav_faq"></a></nav><select id="lang" aria-label="Language">'+Object.keys(LANGS).map(k=>'<option value="'+k+'">'+LANGS[k]+'</option>').join('')+'</select></div></header>');
+el('ftr','<footer class="bot"><div class="container"><nav class="flinks"><a href="about.html" data-i18n="ft_about"></a><a href="contact.html" data-i18n="ft_contact"></a><a href="privacy.html" data-i18n="ft_privacy"></a><a href="disclaimer.html" data-i18n="ft_disclaimer"></a><a href="terms.html" data-i18n="ft_terms"></a></nav><div class="follow" data-i18n="follow"></div><div class="social">'+SOC.map(s=>'<a href="'+s[1]+'" target="_blank" rel="noopener me" aria-label="'+s[0]+'" title="'+s[0]+'"><svg viewBox="0 0 24 24">'+s[2]+'</svg></a>').join('')+'</div><div class="copy">© '+new Date().getFullYear()+' 2FA Auths. <span data-i18n="rights"></span></div></div></footer>');
 function apply(){
   const r=document.documentElement;r.lang=cur;r.dir=cur==='ar'?'rtl':'ltr';
   document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));
   document.querySelectorAll('[data-ph]').forEach(e=>e.placeholder=t(e.dataset.ph));
   document.querySelectorAll('[data-pair]').forEach(e=>{const p=t(e.dataset.pair).split('|');e.firstElementChild.textContent=p[0];e.lastElementChild.textContent=p[1]});
   const doc=document.querySelector('[data-doc]');
-  if(doc){const p=t(doc.dataset.doc).split('|');doc.innerHTML='<h1></h1>'+p.slice(1).map(()=>'<p></p>').join('');doc.firstChild.textContent=p[0];[...doc.querySelectorAll('p')].forEach((e,i)=>e.textContent=p[i+1]);document.title=p[0]+' — 2FA Extractor'}
+  if(doc){const p=t(doc.dataset.doc).split('|');doc.innerHTML='<h1></h1>'+p.slice(1).map(()=>'<p></p>').join('');doc.firstChild.textContent=p[0];[...doc.querySelectorAll('p')].forEach((e,i)=>e.textContent=p[i+1]);document.title=p[0]+' — 2FA Authenticator'}
   else{document.title=t('title');const m=document.querySelector('meta[name=description]');if(m)m.content=t('desc')}
   document.getElementById('lang').value=cur;
 }

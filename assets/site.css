@@ -126,3 +126,5 @@ ol.steps h3{margin:0 0 4px;font-size:17px}ol.steps p{margin:0;color:var(--dim)}
 .scan-error h3{margin:0 0 8px;font-size:18px}.scan-error p{margin:0 0 10px;color:var(--dim);font-size:14.5px;line-height:1.55}
 .scan-error .hint{font-size:13px;background:rgba(255,255,255,.05);border-radius:10px;padding:10px 12px}
 .btn-retry{margin:6px 0 14px;padding:12px 22px;border:none;border-radius:11px;background:linear-gradient(90deg,var(--cyan),var(--violet));color:#0A0C13;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer}
+
+.doc h2{font-size:20px;margin:34px 0 10px}.doc .meta{color:var(--dim);font-size:14px;margin:-8px 0 20px}

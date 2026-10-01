@@ -97,3 +97,8 @@ ol.steps li{counter-increment:s;background:var(--panel);border:1px solid var(--l
 ol.steps li::before{content:counter(s);position:absolute;inset-inline-start:18px;top:18px;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--violet));color:#0A0C13;font-weight:800;display:flex;align-items:center;justify-content:center}
 [dir=rtl] ol.steps li{padding:18px 66px 18px 20px}
 ol.steps h3{margin:0 0 4px;font-size:17px}ol.steps p{margin:0;color:var(--dim)}
+
+/* ---- 404 ---- */
+.nf{max-width:640px;margin:0 auto;padding:90px 20px 60px;text-align:center;min-height:60vh}
+.nf .code{font-size:clamp(90px,22vw,160px);font-weight:800;line-height:1;letter-spacing:-4px;background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0 0 8px}
+.nf h1{font-size:clamp(24px,5vw,32px);margin:0 0 12px}.nf p{color:var(--dim);font-size:17px;margin:0 0 28px}

@@ -1,826 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2FA Extractor</title>
+<title>2FA генератор кодов онлайн — TOTP Authenticator без установки | 2FA Extractor</title>
+<meta name="description" content="Бесплатный онлайн 2FA генератор: получите TOTP-код из секретного ключа или QR-кода. Google Authenticator онлайн, без регистрации, работает в браузере.">
+<meta name="keywords" content="2fa генератор онлайн, 2fa код онлайн, totp генератор, google authenticator онлайн, двухфакторная аутентификация, генератор кодов 2fa, секретный ключ 2fa, otp онлайн, 2fa authenticator, qr код 2fa">
+<link rel="canonical" href="https://2fa-auth-production-a803.up.railway.app/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2FA Extractor — онлайн-генератор 2FA кодов (TOTP)">
+<meta property="og:description" content="Получите 6-значный код 2FA из секретного ключа или QR-кода. Бесплатно, в браузере.">
+<meta property="og:url" content="https://2fa-auth-production-a803.up.railway.app/">
+<meta name="theme-color" content="#0A0C13">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
-<style>
-  :root{
-    --bg-0: #0A0C13;
-    --bg-1: #10131C;
-    --panel: #12151F;
-    --panel-border: rgba(255,255,255,0.07);
-    --field-bg: #0B0D14;
-    --ink: #E7E9F1;
-    --ink-dim: #7B8296;
-    --ink-faint: #4B5163;
-    --cyan: #29D8EA;
-    --violet: #7C5CFC;
-    --danger: #FF6B6B;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Space Grotesk', sans-serif;
-  }
-
-  *{ box-sizing:border-box; }
-
-  button{
-    -webkit-tap-highlight-color: transparent;
-  }
-  button:focus,
-  button:focus-visible{
-    outline: none;
-  }
-
-  body{
-    margin:0;
-    min-height:100vh;
-    background:
-      radial-gradient(circle at 12% 8%, rgba(124,92,252,0.10), transparent 40%),
-      radial-gradient(circle at 90% 85%, rgba(41,216,234,0.08), transparent 45%),
-      var(--bg-0);
-    font-family: var(--sans);
-    color: var(--ink);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding: 28px 16px;
-  }
-
-  .wrap{ width:100%; max-width: 880px; }
-
-  .brand{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:26px;
-    padding-left:2px;
-  }
-  .brand .glyph{
-    width:38px; height:38px;
-    border-radius:11px;
-    background: linear-gradient(135deg, var(--cyan), var(--violet));
-    display:flex; align-items:center; justify-content:center;
-    flex-shrink:0;
-  }
-  .brand .glyph svg{ width:20px; height:20px; color:#fff; }
-  .brand span{
-    font-weight:600;
-    font-size:22px;
-    letter-spacing:0.2px;
-  }
-
-  .panel{
-    background: var(--panel);
-    border:1px solid var(--panel-border);
-    border-radius:18px;
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    overflow:hidden;
-    box-shadow: 0 24px 60px -32px rgba(0,0,0,0.6);
-  }
-  @media (max-width: 620px){
-    .panel{ grid-template-columns: 1fr; }
-    .col-left{ border-right:none !important; border-bottom:1px solid var(--panel-border); }
-  }
-
-  .col{ padding: 32px 30px; }
-  .col-left{ border-right:1px solid var(--panel-border); }
-
-  .col-label{
-    font-family: var(--mono);
-    font-size:13px;
-    font-weight:600;
-    letter-spacing:1.4px;
-    color: var(--cyan);
-    display:flex;
-    align-items:center;
-    gap:7px;
-    margin-bottom:16px;
-  }
-  .col-label svg{ width:14px; height:14px; }
-
-  .label-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-  }
-
-  .code-row{
-    display:flex;
-    align-items:stretch;
-    gap:12px;
-  }
-  .refresh-pill{
-    flex:0 0 auto;
-    width:56px;
-    height:56px;
-    padding:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    white-space:nowrap;
-  }
-  .refresh-pill svg{
-    width:20px;
-    height:20px;
-  }
-  .refresh-pill.spinning svg{
-    animation: spin360 0.6s ease-out;
-  }
-  @keyframes spin360{
-    from{ transform: rotate(0deg); }
-    to{ transform: rotate(360deg); }
-  }
-
-  .timer-pill{
-    font-family: var(--mono);
-    font-size:14px;
-    font-weight:600;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--panel-border);
-    border-radius: 20px;
-    padding: 5px 13px;
-    display:flex;
-    align-items:center;
-    gap:7px;
-    transition: color 0.9s linear, background-color 0.9s linear, border-color 0.9s linear;
-  }
-  .timer-pill .dot{
-    width:7px; height:7px; border-radius:50%;
-    background: currentColor;
-  }
-
-  textarea.key-input{
-    width:100%;
-    height:120px;
-    resize:none;
-    background: var(--field-bg);
-    border: 1px solid var(--panel-border);
-    border-radius:12px;
-    padding:16px 44px 16px 16px;
-    color: var(--ink);
-    font-family: var(--mono);
-    font-size:16px;
-    letter-spacing:0.6px;
-    outline:none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  }
-  textarea.key-input::placeholder{ color: var(--ink-faint); }
-  textarea.key-input:focus{
-    border-color: var(--cyan);
-    box-shadow: 0 0 0 3px rgba(41,216,234,0.12);
-  }
-  textarea.key-input.invalid{ border-color: var(--danger); }
-
-  .key-input-wrap{
-    position: relative;
-  }
-  .clear-key-btn{
-    position:absolute;
-    top:10px;
-    right:10px;
-    width:26px;
-    height:26px;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    border:none;
-    border-radius:7px;
-    background: rgba(255,255,255,0.06);
-    color: var(--ink-dim);
-    cursor:pointer;
-    padding:0;
-    transition: background 0.15s ease, color 0.15s ease;
-  }
-  .clear-key-btn svg{ width:14px; height:14px; }
-  .clear-key-btn:hover{ background: rgba(255,107,107,0.15); color: var(--danger); }
-  .key-input-wrap.has-value .clear-key-btn{ display:flex; }
-
-  .action-row{
-    display:flex;
-    gap:12px;
-    margin-top:14px;
-  }
-
-  .btn-secondary{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:9px;
-    padding:14px 12px;
-    border-radius:12px;
-    background: #171A26;
-    border:1px solid var(--panel-border);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-weight:500;
-    font-size:16px;
-    cursor:pointer;
-    transition: border-color 0.15s ease, background 0.15s ease;
-  }
-  .btn-secondary:hover{ border-color: rgba(41,216,234,0.4); background:#1B1F2D; }
-  .btn-secondary svg{ width:18px; height:18px; flex-shrink:0; }
-
-  .seg-bar{
-    position: relative;
-    height:20px;
-    border-radius:4px;
-    overflow:hidden;
-    margin-bottom:10px;
-    background: #1B1E2A;
-  }
-  .seg-fill{
-    position:absolute;
-    inset:0;
-    width:100%;
-    z-index:0;
-    background: linear-gradient(90deg,
-      hsl(210, 85%, 60%) 0%,
-      hsl(255, 78%, 64%) 35%,
-      hsl(32, 90%, 58%) 70%,
-      hsl(0, 72%, 32%) 100%);
-  }
-  .seg-glow{
-    position:absolute;
-    inset:0;
-    z-index:1;
-    pointer-events:none;
-    mix-blend-mode: screen;
-    background: repeating-linear-gradient(100deg,
-      transparent 0%,
-      transparent 6%,
-      rgba(255,255,255,0.55) 8%,
-      transparent 10%,
-      transparent 22%);
-    background-size: 220% 100%;
-    animation: shimmerTravel 2.6s linear infinite, glowPulse 1.1s ease-in-out infinite;
-  }
-  @keyframes shimmerTravel{
-    0%   { background-position: 0% 0; }
-    100% { background-position: -220% 0; }
-  }
-  @keyframes glowPulse{
-    0%   { opacity: 0.7; }
-    45%  { opacity: 1; }
-    55%  { opacity: 0.5; }
-    100% { opacity: 0.7; }
-  }
-  .seg-cover{
-    position:absolute;
-    top:0; right:0; bottom:0;
-    width:100%;
-    z-index:2;
-    background: #1B1E2A;
-  }
-  .seg-ticks{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    z-index:3;
-    background-image: repeating-linear-gradient(90deg,
-      transparent 0,
-      transparent calc(100%/30 - 2px),
-      var(--panel) calc(100%/30 - 2px),
-      var(--panel) calc(100%/30));
-  }
-  .seg-head{
-    position:absolute;
-    top:50%; left:0;
-    width:7px; height:32px;
-    border-radius:3px;
-    background: #F2FBFF;
-    transform: translate(-50%, -50%);
-    z-index:4;
-    pointer-events:none;
-    box-shadow:
-      0 0 6px 2px rgba(255,255,255,0.9),
-      0 0 16px 6px var(--head-glow, rgba(41,216,234,0.85)),
-      0 0 30px 12px var(--head-glow, rgba(41,216,234,0.5));
-    animation: neonFlicker 0.9s ease-in-out infinite;
-  }
-  @keyframes neonFlicker{
-    0%   { opacity: 1;    filter: brightness(1); }
-    38%  { opacity: 0.85; filter: brightness(1.15); }
-    50%  { opacity: 0.55; filter: brightness(0.85); }
-    62%  { opacity: 0.9;  filter: brightness(1.2); }
-    100% { opacity: 1;    filter: brightness(1); }
-  }
-
-  .code-box{
-    flex:1;
-    min-width:0;
-    background: var(--field-bg);
-    border:1px solid var(--panel-border);
-    border-radius:12px;
-    padding:14px;
-    height:56px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .code-row{ margin-bottom:18px; }
-  .code-box .otp{
-    font-family: var(--mono);
-    font-size:24px;
-    font-weight:600;
-    letter-spacing:4px;
-    color: var(--ink);
-  }
-  .code-box .otp.placeholder{ color: var(--ink-faint); letter-spacing:5px; }
-
-  .btn-primary{
-    width:100%;
-    padding:17px;
-    border:none;
-    border-radius:12px;
-    background: linear-gradient(90deg, var(--cyan), var(--violet));
-    color:#0A0C13;
-    font-family: var(--sans);
-    font-weight:700;
-    font-size:16px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    transition: filter 0.15s ease, transform 0.1s ease;
-  }
-  .btn-primary:hover{ filter: brightness(1.08); }
-  .btn-primary:active{ transform: scale(0.99); }
-  .btn-primary:disabled{ background:#23273a; color: var(--ink-faint); cursor:not-allowed; filter:none; }
-  .btn-primary svg{ width:18px; height:18px; }
-
-  .scan-overlay{
-    position:fixed; inset:0;
-    background:rgba(5,6,10,0.88);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:50;
-    padding:20px;
-  }
-  .scan-overlay.show{ display:flex; }
-  .scan-card{
-    background: var(--panel);
-    border:1px solid var(--panel-border);
-    border-radius:16px;
-    padding:18px;
-    max-width:360px;
-    width:100%;
-  }
-  .scan-card video{ width:100%; border-radius:10px; background:#000; }
-  .scan-card .scan-status{
-    font-family: var(--mono);
-    font-size:11.5px;
-    color: var(--ink-dim);
-    text-align:center;
-    margin: 12px 0;
-  }
-  .scan-close{
-    width:100%;
-    padding:10px;
-    border-radius:9px;
-    background:#171A26;
-    border:1px solid var(--panel-border);
-    color:var(--ink);
-    font-family: var(--sans);
-    font-size:13px;
-    cursor:pointer;
-  }
-
-  .toast{
-    position:fixed;
-    bottom:26px; left:50%;
-    transform: translateX(-50%) translateY(10px);
-    background:#171A26;
-    border:1px solid var(--panel-border);
-    color:var(--ink);
-    padding:10px 18px;
-    border-radius:10px;
-    font-size:13px;
-    font-family: var(--sans);
-    opacity:0;
-    pointer-events:none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-  }
-  .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
-</style>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/tool.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"2FA Extractor","applicationCategory":"SecurityApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Онлайн-генератор 2FA (TOTP) кодов из секретного ключа или QR-кода.","url":"https://2fa-auth-production-a803.up.railway.app/"}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js" defer></script>
 </head>
-<body>
+<body data-page="home">
+<div id="hdr"></div>
 
-<div class="wrap">
-  <div class="brand">
-    <div class="glyph">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a4 4 0 0 0-4-4z"></path><line x1="12" y1="14" x2="12" y2="17"></line></svg>
-    </div>
-    <span>2FA Extractor</span>
-  </div>
+<main>
+<section id="home" style="padding-top:0"><div class="container hero">
+  <h1 data-i18n="h1"></h1>
+  <p data-i18n="sub"></p>
+  <a class="cta" href="#tools" data-i18n="cta"></a>
+</div></section>
 
+<section id="tools"><div class="container">
+  <h2 data-i18n="tool_title"></h2>
+  <div class="tool">
   <div class="panel">
     <div class="col col-left">
       <div class="col-label">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a4 4 0 0 0-4-4z"></path></svg>
-        SECRET KEY
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a4 4 0 0 0-4-4z"/></svg>
+        <span data-i18n="key"></span>
       </div>
       <div class="key-input-wrap">
-        <textarea id="secret" class="key-input" placeholder="e.g. GAXG 243E MR2X QZ..." spellcheck="false"></textarea>
-        <button class="clear-key-btn" id="clearKeyBtn" type="button" aria-label="Clear key" title="Clear">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <textarea id="secret" class="key-input" data-ph="key_ph" spellcheck="false" autocomplete="off" aria-label="Secret key"></textarea>
+        <button class="clear-key-btn" id="clearKeyBtn" type="button" aria-label="Clear">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
       <div class="action-row">
         <button class="btn-secondary" id="pasteBtn" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"></rect><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"></path></svg>
-          Paste Key
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/></svg>
+          <span data-i18n="paste"></span>
         </button>
         <button class="btn-secondary" id="scanBtn" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="8" y="8" width="8" height="8" rx="1"></rect></svg>
-          Scan QR
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+          <span data-i18n="scan"></span>
         </button>
       </div>
     </div>
-
     <div class="col col-right">
       <div class="label-row">
-        <div class="col-label" style="margin-bottom:0;">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 11-14h-7l1-6z"></path></svg>
-          ACTIVE TOKEN
+        <div class="col-label" style="margin-bottom:0">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 11-14h-7l1-6z"/></svg>
+          <span data-i18n="token"></span>
         </div>
         <div class="timer-pill" id="timerPill"><span class="dot"></span><span id="timerNum">--</span></div>
       </div>
-
-      <div class="code-row" style="margin-top:14px;">
-        <div class="code-box">
-          <div class="otp placeholder" id="otpDisplay">------</div>
-        </div>
-        <button class="btn-secondary refresh-pill" id="refreshBtn" type="button" title="Recalculate now" aria-label="Refresh">
-          <svg viewBox="0 0 24 24">
-            <path d="M 10.580 1.899 A 10.2 10.2 0 0 1 14.248 5.688 A 10.2 10.2 0 0 1 22.144 10.934 L 17.172 11.456 A 5.2 5.2 0 0 0 11.276 6.851 Z" fill="#29D8EA"/>
-            <path d="M 21.457 15.821 A 10.2 10.2 0 0 1 16.342 17.102 A 10.2 10.2 0 0 1 7.851 21.318 L 9.885 16.750 A 5.2 5.2 0 0 0 16.821 13.948 Z" fill="#7C5CFC"/>
-            <path d="M 3.962 18.280 A 10.2 10.2 0 0 1 5.410 13.209 A 10.2 10.2 0 0 1 6.005 3.748 L 8.944 7.793 A 5.2 5.2 0 0 0 7.902 15.201 Z" fill="#5FE8D0"/>
-          </svg>
+      <div class="code-row">
+        <div class="code-box"><div class="otp placeholder" id="otpDisplay">------</div></div>
+        <button class="btn-secondary refresh-pill" id="refreshBtn" type="button" aria-label="Refresh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#29D8EA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.9-3.5M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.9 3.5M20 20v-4h-4"/></svg>
         </button>
       </div>
-
-      <div style="margin-bottom:14px;">
-        <div class="seg-bar" id="segBar">
-          <div class="seg-fill" id="segFill"></div>
-          <div class="seg-glow"></div>
-          <div class="seg-cover" id="segCover"></div>
-          <div class="seg-ticks"></div>
-          <div class="seg-head" id="segHead"></div>
-        </div>
+      <div class="seg-bar" id="segBar">
+        <div class="seg-fill"></div><div class="seg-glow"></div><div class="seg-cover" id="segCover"></div>
+        <div class="seg-ticks"></div><div class="seg-head" id="segHead"></div>
       </div>
-
       <button class="btn-primary" id="copyBtn" type="button" disabled>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-        Copy Code
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span data-i18n="copy"></span>
       </button>
     </div>
   </div>
-</div>
+  </div>
+</div></section>
 
-<div class="scan-overlay" id="scanOverlay">
+<section id="features"><div class="container">
+  <h2 data-i18n="f_title"></h2>
+  <div class="grid">
+    <article class="card" data-pair="f1"><h3></h3><p></p></article>
+    <article class="card" data-pair="f2"><h3></h3><p></p></article>
+    <article class="card" data-pair="f3"><h3></h3><p></p></article>
+    <article class="card" data-pair="f4"><h3></h3><p></p></article>
+  </div>
+</div></section>
+
+<section id="faq"><div class="container">
+  <h2 data-i18n="faq_title"></h2>
+  <details data-pair="q1"><summary></summary><p></p></details>
+  <details data-pair="q2"><summary></summary><p></p></details>
+  <details data-pair="q3"><summary></summary><p></p></details>
+  <details data-pair="q4"><summary></summary><p></p></details>
+</div></section>
+</main>
+
+<div id="ftr"></div>
+
+<div class="scan-overlay tool" id="scanOverlay">
   <div class="scan-card">
     <video id="scanVideo" playsinline muted></video>
-    <div class="scan-status" id="scanStatus">Point the camera at a QR code</div>
-    <button class="scan-close" id="scanClose" type="button">Cancel</button>
+    <div class="scan-status" id="scanStatus"></div>
+    <button class="scan-close" id="scanClose" type="button" data-i18n="cancel"></button>
   </div>
 </div>
+<canvas id="scanCanvas" style="display:none"></canvas>
+<div class="toast" id="toast"></div>
 
-<canvas id="scanCanvas" style="display:none;"></canvas>
-<div class="toast" id="toast">Copied</div>
-
-<script>
-(function(){
-  const secretInput = document.getElementById('secret');
-  const clearKeyBtn = document.getElementById('clearKeyBtn');
-  const keyInputWrap = secretInput.closest('.key-input-wrap');
-  const otpDisplay = document.getElementById('otpDisplay');
-  const timerPill = document.getElementById('timerPill');
-  const timerNum = document.getElementById('timerNum');
-  const segBar = document.getElementById('segBar');
-  const copyBtn = document.getElementById('copyBtn');
-  const refreshBtn = document.getElementById('refreshBtn');
-  const pasteBtn = document.getElementById('pasteBtn');
-  const scanBtn = document.getElementById('scanBtn');
-  const scanOverlay = document.getElementById('scanOverlay');
-  const scanVideo = document.getElementById('scanVideo');
-  const scanStatus = document.getElementById('scanStatus');
-  const scanClose = document.getElementById('scanClose');
-  const scanCanvas = document.getElementById('scanCanvas');
-  const toast = document.getElementById('toast');
-
-  const segCover = document.getElementById('segCover');
-  const segHead = document.getElementById('segHead');
-
-  function base32Decode(input){
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-    const clean = input.replace(/=+$/,'').toUpperCase().replace(/[^A-Z2-7]/g,'');
-    let bits = '';
-    for (const ch of clean){
-      const val = alphabet.indexOf(ch);
-      if (val === -1) continue;
-      bits += val.toString(2).padStart(5,'0');
-    }
-    const bytes = [];
-    for (let i=0; i+8<=bits.length; i+=8){
-      bytes.push(parseInt(bits.substring(i,i+8),2));
-    }
-    return new Uint8Array(bytes);
-  }
-
-  async function hotp(keyBytes, counter){
-    const buf = new ArrayBuffer(8);
-    const view = new DataView(buf);
-    view.setUint32(0, Math.floor(counter / 2**32));
-    view.setUint32(4, counter >>> 0);
-
-    const cryptoKey = await crypto.subtle.importKey(
-      'raw', keyBytes, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']
-    );
-    const sig = await crypto.subtle.sign('HMAC', cryptoKey, buf);
-    const hmac = new Uint8Array(sig);
-
-    const offset = hmac[hmac.length - 1] & 0x0f;
-    const binCode = ((hmac[offset] & 0x7f) << 24) |
-                    ((hmac[offset+1] & 0xff) << 16) |
-                    ((hmac[offset+2] & 0xff) << 8) |
-                    (hmac[offset+3] & 0xff);
-
-    return (binCode % 1_000_000).toString().padStart(6,'0');
-  }
-
-  function extractSecret(raw){
-    const trimmed = raw.trim();
-    if (trimmed.startsWith('otpauth://')){
-      try{
-        const url = new URL(trimmed);
-        const s = url.searchParams.get('secret');
-        if (s) return s;
-      } catch(e){ /* fall through */ }
-    }
-    return trimmed;
-  }
-
-  let lastCode = null;
-  let keyLen = 0;
-  let manualOffset = 0;
-  let lastRealWindow = null;
-
-  function formatCode(code){ return code.slice(0,3) + ' ' + code.slice(3); }
-
-  // Smooth hue sweep across the 30s cycle: cyan -> violet -> amber -> red.
-  // elapsedFraction 0 = code just refreshed, 1 = about to expire.
-  function sweepColor(elapsedFraction){
-    const stops = [
-      { at: 0.00, h: 189, s: 82, l: 58 },  // cyan
-      { at: 0.45, h: 255, s: 78, l: 64 },  // violet
-      { at: 0.75, h: 32,  s: 90, l: 58 },  // amber
-      { at: 1.00, h: 0,   s: 72, l: 32 }   // dark red
-    ];
-    let a = stops[0], b = stops[stops.length - 1];
-    for (let i = 0; i < stops.length - 1; i++){
-      if (elapsedFraction >= stops[i].at && elapsedFraction <= stops[i+1].at){
-        a = stops[i]; b = stops[i+1];
-        break;
-      }
-    }
-    const span = (b.at - a.at) || 1;
-    const t = Math.min(1, Math.max(0, (elapsedFraction - a.at) / span));
-    const h = a.h + (b.h - a.h) * t;
-    const s = a.s + (b.s - a.s) * t;
-    const l = a.l + (b.l - a.l) * t;
-    return 'hsl(' + h.toFixed(0) + ', ' + s.toFixed(0) + '%, ' + l.toFixed(0) + '%)';
-  }
-
-  let validKey = false;
-
-  async function refresh(){
-    const secretVal = extractSecret(secretInput.value);
-    secretInput.classList.remove('invalid');
-
-    if (!secretVal){
-      otpDisplay.textContent = '------';
-      otpDisplay.classList.add('placeholder');
-      timerNum.textContent = '--';
-      copyBtn.disabled = true;
-      validKey = false;
-      segCover.style.width = '100%';
-      return;
-    }
-
-    let keyBytes;
-    try{
-      keyBytes = base32Decode(secretVal);
-      if (keyBytes.length === 0) throw new Error('empty');
-    } catch(e){
-      secretInput.classList.add('invalid');
-      otpDisplay.textContent = 'ERROR';
-      otpDisplay.classList.add('placeholder');
-      copyBtn.disabled = true;
-      validKey = false;
-      segCover.style.width = '100%';
-      return;
-    }
-
-    validKey = true;
-    keyLen = keyBytes.length;
-    const epoch = Math.floor(Date.now() / 1000);
-    const realWindow = Math.floor(epoch / 30);
-    if (lastRealWindow !== null && realWindow !== lastRealWindow){
-      manualOffset = 0;
-    }
-    lastRealWindow = realWindow;
-    const counter = realWindow + manualOffset;
-
-    const code = await hotp(keyBytes, counter);
-    if (code !== lastCode){
-      otpDisplay.textContent = formatCode(code);
-      otpDisplay.classList.remove('placeholder');
-      lastCode = code;
-    }
-
-    copyBtn.disabled = false;
-  }
-
-  // Runs every animation frame so the bar and timer glide continuously,
-  // like wax melting down a candle, instead of jumping once per second.
-  function animateVisuals(){
-    if (validKey){
-      const now = Date.now() / 1000;
-      const secondsIntoWindow = now % 30;
-      const secondsLeft = 30 - secondsIntoWindow;
-      const elapsedFraction = secondsIntoWindow / 30;
-
-      segCover.style.width = ((1 - elapsedFraction) * 100) + '%';
-      timerNum.textContent = Math.ceil(secondsLeft) + 's';
-
-      const currentColor = sweepColor(elapsedFraction);
-      timerPill.style.color = currentColor;
-      timerPill.style.background = currentColor.replace('hsl(', 'hsla(').replace(')', ', 0.12)');
-      timerPill.style.borderColor = currentColor.replace('hsl(', 'hsla(').replace(')', ', 0.35)');
-
-      segHead.style.opacity = '1';
-      segHead.style.left = (elapsedFraction * 100) + '%';
-      segHead.style.setProperty('--head-glow', currentColor.replace('hsl(', 'hsla(').replace(')', ', 0.85)'));
-    } else {
-      segHead.style.opacity = '0';
-    }
-    requestAnimationFrame(animateVisuals);
-  }
-
-  function showToast(msg){
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(()=> toast.classList.remove('show'), 1400);
-  }
-
-  copyBtn.addEventListener('click', async () => {
-    const text = otpDisplay.textContent.replace(/\s/g,'');
-    try{
-      await navigator.clipboard.writeText(text);
-      showToast('Copied');
-    } catch(e){
-      showToast('Could not copy');
-    }
-  });
-
-  pasteBtn.addEventListener('click', async () => {
-    try{
-      const text = await navigator.clipboard.readText();
-      secretInput.value = text.trim();
-      lastCode = null;
-      manualOffset = 0;
-      updateClearBtn();
-      await refresh();
-      if (validKey){
-        const code = otpDisplay.textContent.replace(/\s/g,'');
-        try{
-          await navigator.clipboard.writeText(code);
-          showToast('Code copied: ' + otpDisplay.textContent);
-        } catch(copyErr){
-          showToast('Generated — copy failed');
-        }
-      } else {
-        showToast('Invalid key');
-      }
-    } catch(e){
-      showToast('Clipboard permission denied');
-    }
-  });
-
-  function updateClearBtn(){
-    keyInputWrap.classList.toggle('has-value', secretInput.value.length > 0);
-  }
-
-  secretInput.addEventListener('input', () => { lastCode = null; manualOffset = 0; updateClearBtn(); refresh(); });
-
-  clearKeyBtn.addEventListener('click', () => {
-    secretInput.value = '';
-    lastCode = null;
-    manualOffset = 0;
-    updateClearBtn();
-    refresh();
-    secretInput.focus();
-  });
-
-  updateClearBtn();
-
-  refreshBtn.addEventListener('click', async () => {
-    refreshBtn.classList.remove('spinning');
-    void refreshBtn.offsetWidth; // restart animation
-    refreshBtn.classList.add('spinning');
-    manualOffset += 1;
-    lastCode = null;
-    await refresh();
-    if (!validKey){
-      showToast('Enter a secret key first');
-      return;
-    }
-    const code = otpDisplay.textContent.replace(/\s/g,'');
-    try{
-      await navigator.clipboard.writeText(code);
-      showToast('Code copied: ' + otpDisplay.textContent);
-    } catch(copyErr){
-      showToast('Generated — copy failed');
-    }
-  });
-
-  // --- QR scanning ---
-  let scanStream = null;
-  let scanRAF = null;
-
-  async function startScan(){
-    scanOverlay.classList.add('show');
-    scanStatus.textContent = 'Point the camera at a QR code';
-    try{
-      scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      scanVideo.srcObject = scanStream;
-      await scanVideo.play();
-      tickScan();
-    } catch(e){
-      scanStatus.textContent = 'Camera permission denied';
-    }
-  }
-
-  function stopScan(){
-    if (scanRAF) cancelAnimationFrame(scanRAF);
-    if (scanStream){
-      scanStream.getTracks().forEach(t => t.stop());
-      scanStream = null;
-    }
-    scanOverlay.classList.remove('show');
-  }
-
-  function tickScan(){
-    if (!scanStream) return;
-    const ctx = scanCanvas.getContext('2d');
-    if (scanVideo.readyState === scanVideo.HAVE_ENOUGH_DATA){
-      scanCanvas.width = scanVideo.videoWidth;
-      scanCanvas.height = scanVideo.videoHeight;
-      ctx.drawImage(scanVideo, 0, 0, scanCanvas.width, scanCanvas.height);
-      const imageData = ctx.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
-      if (window.jsQR){
-        const result = jsQR(imageData.data, imageData.width, imageData.height);
-        if (result && result.data){
-          secretInput.value = result.data;
-          lastCode = null;
-          manualOffset = 0;
-          updateClearBtn();
-          stopScan();
-          refresh().then(async () => {
-            if (validKey){
-              const code = otpDisplay.textContent.replace(/\s/g,'');
-              try{
-                await navigator.clipboard.writeText(code);
-                showToast('Code copied: ' + otpDisplay.textContent);
-              } catch(copyErr){
-                showToast('Generated — copy failed');
-              }
-            } else {
-              showToast('Invalid key in QR code');
-            }
-          });
-          return;
-        }
-      }
-    }
-    scanRAF = requestAnimationFrame(tickScan);
-  }
-
-  scanBtn.addEventListener('click', startScan);
-  scanClose.addEventListener('click', stopScan);
-
-  refresh();
-  animateVisuals();
-  setInterval(refresh, 1000);
-})();
-</script>
-
+<script src="assets/i18n.js"></script>
+<script src="assets/tool.js"></script>
 </body>
 </html>

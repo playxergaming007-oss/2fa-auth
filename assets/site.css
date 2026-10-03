@@ -16,7 +16,6 @@ header.top{position:sticky;top:0;z-index:20;background:rgba(10,12,19,.85);backdr
 .hero{padding-top:72px;padding-bottom:40px}.hero>*{max-width:740px}
 .hero h1{font-size:clamp(30px,5vw,48px);line-height:1.15;margin:0 0 18px;font-weight:800;letter-spacing:-.5px}
 .hero p{color:var(--dim);font-size:18px;margin:0}
-.ad-slot{width:100%;margin:0 auto}.ad-top{min-height:120px;margin-top:8px}.ad-slim{min-height:90px;margin:8px auto 0}
 section{padding:48px 0}
 section>.container>h2{font-size:28px;margin:0 0 24px;font-weight:700}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
@@ -128,3 +127,13 @@ ol.steps h3{margin:0 0 4px;font-size:17px}ol.steps p{margin:0;color:var(--dim)}
 .btn-retry{margin:6px 0 14px;padding:12px 22px;border:none;border-radius:11px;background:linear-gradient(90deg,var(--cyan),var(--violet));color:#0A0C13;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer}
 
 .doc h2{font-size:20px;margin:34px 0 10px}.doc .meta{color:var(--dim);font-size:14px;margin:32px 0 0}
+
+/* ---- ad system ---- */
+.ads-wrap{padding-top:10px;padding-bottom:10px}
+.ad{display:none;margin:0 auto;text-align:center;overflow:hidden}
+.ad-m{display:block}
+@media(min-width:768px){.ad-m{display:none}.ad-d{display:block}}
+.ad-side{display:none;position:fixed;top:90px;width:160px;z-index:5}
+@media(min-width:1480px){.ad-side{display:block}.ad-left{right:calc(50% + 540px)}.ad-right{left:calc(50% + 540px)}}
+.ads-debug .ad{outline:2px dashed rgba(41,216,234,.7);background:rgba(41,216,234,.06)}
+.ads-debug .ad::before{content:attr(data-label);display:block;padding:8px;font:600 12px 'JetBrains Mono',monospace;color:#29D8EA;word-break:break-word}

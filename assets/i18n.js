@@ -138,4 +138,26 @@ function apply(){
 }
 document.getElementById('lang').addEventListener('change',e=>{cur=e.target.value;try{localStorage.setItem('lang',cur)}catch(x){}apply()});
 apply();
+
+// FAQ accordion: smooth open/close (height + fade + rotating plus icon)
+document.querySelectorAll('details[data-pair]').forEach(function(d){
+  var s=d.querySelector('summary'),p=d.querySelector('p'),anim=null,
+      reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(d.open)d.classList.add('is-open');
+  s.addEventListener('click',function(e){
+    e.preventDefault();
+    var opening=!d.classList.contains('is-open');
+    d.classList.toggle('is-open',opening);
+    if(reduce||!d.animate){d.open=opening;return;}
+    var start=d.offsetHeight;                       // current height (also when interrupted mid-animation)
+    if(anim){anim.onfinish=null;anim.cancel();}
+    d.style.overflow='hidden';
+    var end;
+    if(opening){d.open=true;end=d.offsetHeight;}
+    else{d.open=false;end=d.offsetHeight;d.open=true;}
+    anim=d.animate({height:[start+'px',end+'px']},{duration:320,easing:'cubic-bezier(.2,.8,.2,1)'});
+    p.animate([{opacity:opening?0:1,transform:opening?'translateY(-6px)':'none'},{opacity:opening?1:0,transform:opening?'none':'translateY(-6px)'}],{duration:260,easing:'ease',fill:'both'});
+    anim.onfinish=function(){d.open=opening;d.style.overflow='';anim=null;p.getAnimations().forEach(function(a){a.cancel()});};
+  });
+});
 })();

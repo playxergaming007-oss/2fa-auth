@@ -31,9 +31,12 @@
   <h1 data-i18n="h1"></h1>
   <p data-i18n="sub"></p>
 </div>
-  <!-- AD SLOT 1: reserved space (AdSense) -->
-  <div class="container"><div class="ad-slot ad-top" id="ad-top"></div></div>
 </section>
+<!-- AD: top -->
+<div class="container ads-wrap">
+  <div class="ad ad-m" data-slot="top-m" data-size="320x100" data-label="Mobile · top · 320×100"></div>
+  <div class="ad ad-d" data-slot="top-d" data-size="728x90" data-label="Desktop · top · 728×90"></div>
+</div>
 
 <section id="tools"><div class="container">
   <h2 data-i18n="tool_title"></h2>
@@ -93,8 +96,11 @@
   </div>
 </div></section>
 
-<!-- AD SLOT 2: slim banner between Tools and Features (AdSense) -->
-<div class="container"><div class="ad-slot ad-slim" id="ad-mid"></div></div>
+<!-- AD: mid (between Tools and Features) -->
+<div class="container ads-wrap">
+  <div class="ad ad-m" data-slot="mid-m" data-size="300x250" data-label="Mobile · mid · 300×250"></div>
+  <div class="ad ad-d" data-slot="mid-d" data-size="728x90" data-label="Desktop · mid · 728×90"></div>
+</div>
 
 <section id="features"><div class="container">
   <h2 data-i18n="f_title"></h2>
@@ -115,7 +121,15 @@
 </div></section>
 </main>
 
+<!-- AD: bottom -->
+<div class="container ads-wrap">
+  <div class="ad ad-m" data-slot="bottom-m" data-size="300x250" data-label="Mobile · bottom · 300×250"></div>
+  <div class="ad ad-d" data-slot="bottom-d" data-size="728x90" data-label="Desktop · bottom · 728×90"></div>
+</div>
 <div id="ftr"></div>
+<aside class="ad ad-side ad-left" data-slot="left-d" data-size="160x600" data-label="Desktop · left sidebar · 160×600" aria-hidden="true"></aside>
+<aside class="ad ad-side ad-right" data-slot="right-d" data-size="160x600" data-label="Desktop · right sidebar · 160×600" aria-hidden="true"></aside>
+<script src="assets/ads.js" defer></script>
 
 <div class="scan-overlay tool" id="scanOverlay">
   <div class="scan-card">

@@ -115,7 +115,7 @@
   secretInput.addEventListener('blur',()=>{const a=analyze(secretInput.value);if(a.short){secretInput.classList.add('invalid');showKeyErr('k_short');}});
   clearKeyBtn.addEventListener('click',()=>{reset('');refresh();secretInput.focus();});
   refreshBtn.addEventListener('click',async()=>{
-    refreshBtn.classList.remove('spinning');void refreshBtn.offsetWidth;refreshBtn.classList.add('spinning');
+    refreshBtn.classList.remove('spinning');void refreshBtn.offsetWidth;refreshBtn.classList.add('spinning');refreshBtn.classList.add('busy');setTimeout(()=>refreshBtn.classList.remove('busy'),900);
     manualOffset+=1;lastCode=null;await refresh();
     if(!validKey){showToast(t('t_enter'));return;}
     await copyGenerated();

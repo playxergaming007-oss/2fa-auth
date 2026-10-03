@@ -18,6 +18,11 @@
   <h1 data-i18n="g_title"></h1>
   <p class="lead" data-i18n="g_intro"></p>
 
+  <div class="container ads-wrap">
+    <div class="ad ad-m" data-slot="top-m" data-size="320x100" data-label="Mobile · top · 320×100"></div>
+    <div class="ad ad-d" data-slot="top-d" data-size="728x90" data-label="Desktop · top · 728×90"></div>
+  </div>
+
   <h2 data-i18n="g_video"></h2>
   <!-- ▼ VIDEO: put your YouTube video ID below (e.g. dQw4w9WgXcQ). Leave empty to show the placeholder. -->
   <div class="video" id="videoBox"><div><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span data-i18n="g_soon"></span></div></div>
@@ -39,8 +44,15 @@
     <li data-pair="gs5"><h3></h3><p></p></li>
   </ol>
   <a class="btn" href="/#tools" data-i18n="g_open"></a>
+<div class="container ads-wrap">
+  <div class="ad ad-m" data-slot="bottom-m" data-size="300x250" data-label="Mobile · bottom · 300×250"></div>
+  <div class="ad ad-d" data-slot="bottom-d" data-size="728x90" data-label="Desktop · bottom · 728×90"></div>
+</div>
 </main>
 <div id="ftr"></div>
+<aside class="ad ad-side ad-left" data-slot="left-d" data-size="160x600" data-label="Desktop · left sidebar · 160×600" aria-hidden="true"></aside>
+<aside class="ad ad-side ad-right" data-slot="right-d" data-size="160x600" data-label="Desktop · right sidebar · 160×600" aria-hidden="true"></aside>
+<script src="assets/ads.js" defer></script>
 <script src="assets/i18n.js"></script>
 </body>
 </html>

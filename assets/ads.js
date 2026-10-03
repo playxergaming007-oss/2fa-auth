@@ -17,6 +17,15 @@
     }
   };
 
+  // Core visibility rules live here too, so ad boxes can never show as blank blocks
+  // even if a cached/old site.css is served.
+  var st = document.createElement('style'); st.id = 'ads-core';
+  st.textContent = '.ad{display:none;margin:0 auto;text-align:center;overflow:hidden}.ad-m{display:block}' +
+    '@media(min-width:768px){.ad-m{display:none}.ad-d{display:block}}' +
+    '.ad-side{display:none;position:fixed;top:90px;width:160px;z-index:5}' +
+    '@media(min-width:1480px){.ad-side{display:block}.ad-left{right:calc(50% + 540px)}.ad-right{left:calc(50% + 540px)}}';
+  document.head.appendChild(st);
+
   var q = new URLSearchParams(location.search);
   if (q.get('ads') === 'debug') document.documentElement.classList.add('ads-debug');
 

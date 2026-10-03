@@ -13,7 +13,7 @@ header.top{position:sticky;top:0;z-index:20;background:rgba(10,12,19,.85);backdr
 .top nav a:hover{color:var(--ink);background:rgba(255,255,255,.05)}
 .top select{background:#171A26;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px;cursor:pointer}
 @media(max-width:700px){.top nav{order:3;width:100%;margin:0}.top .container{gap:8px 10px;padding-top:12px;padding-bottom:8px}.top select{margin-inline-start:auto}}
-.hero{padding-top:72px;padding-bottom:40px}.hero>*{max-width:740px}
+.hero{padding-top:36px;padding-bottom:0}.hero>*{max-width:740px}
 .hero h1{font-size:clamp(30px,5vw,48px);line-height:1.15;margin:0 0 18px;font-weight:800;letter-spacing:-.5px}
 .hero p{color:var(--dim);font-size:18px;margin:0}
 section{padding:48px 0}
@@ -147,3 +147,5 @@ ol.steps h3{margin:0 0 4px;font-size:17px}ol.steps p{margin:0;color:var(--dim)}
 .refresh-pill .mini-ring{display:none;width:24px;height:24px;border-radius:50%;border:3px solid rgba(255,255,255,.1);border-top-color:#39FFA0;border-right-color:#3D8BFF;box-shadow:0 0 10px rgba(57,255,160,.55);animation:plspin .7s linear infinite}
 .refresh-pill.busy svg{display:none}.refresh-pill.busy .mini-ring{display:block}
 @keyframes plspin{to{transform:rotate(360deg)}}
+
+.ads-top{padding-top:28px}
